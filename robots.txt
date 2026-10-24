@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kelvinccho.github.io/marathon-race/sitemap.xml

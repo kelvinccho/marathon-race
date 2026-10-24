@@ -1,0 +1,907 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Marathon Race//Majors Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Marathon Race
+X-WR-CALDESC:Ballot, result, payment, expo, and race day
+BEGIN:VEVENT
+UID:nyc-2026-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Drawing opens
+DESCRIPTION:The 2026 drawing ran from 4 February. The hour is not stored.
+  https://www.nyrr.org/tcsnycmarathon Confirm on the official site before
+  you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:ballot_open
+DTSTART;VALUE=DATE:20260204
+DTEND;VALUE=DATE:20260205
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Drawing opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2026-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Drawing closes
+DESCRIPTION:The 2026 drawing closed on 25 February. https://www.nyrr.org/
+ tcsnycmarathon Confirm on the official site before you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:ballot_close
+DTSTART;VALUE=DATE:20260225
+DTEND;VALUE=DATE:20260226
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Drawing closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2026-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Drawing results
+DESCRIPTION:Results were released on 4 March 2026. https://www.nyrr.org/t
+ csnycmarathon Confirm on the official site before you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260304
+DTEND;VALUE=DATE:20260305
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Drawing results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2026-expo@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Expo
+DESCRIPTION:Javits Center\, 11th Avenue between West 35th and 36th. Thurs
+ day 29 October 10:00–20:00 (bibs until 19:30)\, Friday 30 October 10:00–
+ 20:00 (bibs until 19:30)\, Saturday 31 October 09:00–17:00 (bibs until 1
+ 6:30). No proxy pickup. https://www.nyrr.org/tcsnycmarathon Confirm on t
+ he official site before you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:expo
+DTSTART:20261029T140000Z
+DTEND:20261031T210000Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Expo
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2026-expo-end@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Expo closes
+DESCRIPTION:Javits Center\, 11th Avenue between West 35th and 36th. Thurs
+ day 29 October 10:00–20:00 (bibs until 19:30)\, Friday 30 October 10:00–
+ 20:00 (bibs until 19:30)\, Saturday 31 October 09:00–17:00 (bibs until 1
+ 6:30). No proxy pickup. https://www.nyrr.org/tcsnycmarathon Confirm on t
+ he official site before you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:expo
+DTSTART:20261031T210000Z
+DTEND:20261031T211500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Expo closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2026-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2026 · Race day
+DESCRIPTION:Sunday 1 November 2026. US clocks go back at 02:00 that morni
+ ng\, so midnight is still Eastern Daylight Time and the evening is Easte
+ rn Standard Time. The countdown uses the calendar day\, not a wave start
+ . https://www.nyrr.org/tcsnycmarathon Confirm on the official site befor
+ e you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:race
+DTSTART;VALUE=DATE:20261101
+DTEND;VALUE=DATE:20261102
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2026 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:tokyo-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Tokyo 2027 · Lottery opens
+DESCRIPTION:General entry opened at 11:00 Japan time on Friday 14 August 
+ 2026. https://www.marathon.tokyo/en/ Confirm on the official site before
+  you act.
+LOCATION:Tokyo\, Japan
+URL:https://www.marathon.tokyo/en/
+CATEGORIES:ballot_open
+DTSTART:20260814T020000Z
+DTEND:20260814T021500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Tokyo 2027 · Lottery opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:tokyo-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Tokyo 2027 · Lottery closes
+DESCRIPTION:General entry closed at 17:00 Japan time on Friday 28 August 
+ 2026. https://www.marathon.tokyo/en/ Confirm on the official site before
+  you act.
+LOCATION:Tokyo\, Japan
+URL:https://www.marathon.tokyo/en/
+CATEGORIES:ballot_close
+DTSTART:20260828T080000Z
+DTEND:20260828T081500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Tokyo 2027 · Lottery closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:tokyo-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Tokyo 2027 · Lottery results
+DESCRIPTION:General entry results were notified on 18 September 2026. The
+  hour is not stored. https://www.marathon.tokyo/en/ Confirm on the offic
+ ial site before you act.
+LOCATION:Tokyo\, Japan
+URL:https://www.marathon.tokyo/en/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260918
+DTEND;VALUE=DATE:20260919
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Tokyo 2027 · Lottery results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:tokyo-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Tokyo 2027 · Payment due
+DESCRIPTION:Selected runners had to pay by 30 September 2026. Confirm the
+  cutoff if you still have an unpaid place. https://www.marathon.tokyo/en
+ / Confirm on the official site before you act.
+LOCATION:Tokyo\, Japan
+URL:https://www.marathon.tokyo/en/
+CATEGORIES:payment
+DTSTART:20260930T145900Z
+DTEND:20260930T151400Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Tokyo 2027 · Payment due
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:tokyo-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Tokyo 2027 · Race day
+DESCRIPTION:Sunday 7 March 2027. The countdown uses the calendar day in T
+ okyo\, not a wave start. https://www.marathon.tokyo/en/ Confirm on the o
+ fficial site before you act.
+LOCATION:Tokyo\, Japan
+URL:https://www.marathon.tokyo/en/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270307
+DTEND;VALUE=DATE:20270308
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Tokyo 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:boston-2027-qualifier-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Boston 2027 · Registration opens
+DESCRIPTION:Qualifier registration week opened on Monday 14 September 202
+ 6. The opening hour is not stored. https://www.baa.org/races/boston-mara
+ thon Confirm on the official site before you act.
+LOCATION:Boston\, United States
+URL:https://www.baa.org/races/boston-marathon
+CATEGORIES:qualifier_open
+DTSTART;VALUE=DATE:20260914
+DTEND;VALUE=DATE:20260915
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Boston 2027 · Registration opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:boston-2027-qualifier-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Boston 2027 · Registration closes
+DESCRIPTION:Registration closed at 17:00 Eastern on Friday 18 September 2
+ 026. https://www.baa.org/races/boston-marathon Confirm on the official s
+ ite before you act.
+LOCATION:Boston\, United States
+URL:https://www.baa.org/races/boston-marathon
+CATEGORIES:qualifier_close
+DTSTART:20260918T210000Z
+DTEND:20260918T211500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Boston 2027 · Registration closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:boston-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Boston 2027 · Acceptances
+DESCRIPTION:The B.A.A. began sending acceptances on 29 September 2026. 25
+ \,630 qualifiers were accepted. The cutoff was 5:17 inside the standard.
+  https://www.baa.org/races/boston-marathon Confirm on the official site 
+ before you act.
+LOCATION:Boston\, United States
+URL:https://www.baa.org/races/boston-marathon
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Boston 2027 · Acceptances
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:boston-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Boston 2027 · Payment
+DESCRIPTION:The fee is charged as acceptances go out. There is not a sepa
+ rate public payment deadline. https://www.baa.org/races/boston-marathon 
+ Confirm on the official site before you act.
+LOCATION:Boston\, United States
+URL:https://www.baa.org/races/boston-marathon
+CATEGORIES:payment
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Boston 2027 · Payment
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:boston-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Boston 2027 · Race day
+DESCRIPTION:Monday 19 April 2027\, Patriots' Day. The countdown uses the 
+ calendar day\, not a wave start. https://www.baa.org/races/boston-marath
+ on Confirm on the official site before you act.
+LOCATION:Boston\, United States
+URL:https://www.baa.org/races/boston-marathon
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270419
+DTEND;VALUE=DATE:20270420
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Boston 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Ballot opens
+DESCRIPTION:Opened at 09:00 British Summer Time on Friday 24 April 2026. 
+ https://www.tcslondonmarathon.com/ Confirm on the official site before y
+ ou act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:ballot_open
+DTSTART:20260424T080000Z
+DTEND:20260424T081500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Ballot opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Ballot closes
+DESCRIPTION:Closed at 16:00 British Summer Time on Friday 1 May 2026. htt
+ ps://www.tcslondonmarathon.com/ Confirm on the official site before you 
+ act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:ballot_close
+DTSTART:20260501T150000Z
+DTEND:20260501T151500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Ballot closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Ballot results
+DESCRIPTION:Results were emailed through Thursday 9 July 2026. The organi
+ ser asked applicants to get in touch if nothing had arrived by 09:00 on 
+ Friday 10 July. https://www.tcslondonmarathon.com/ Confirm on the offici
+ al site before you act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260709
+DTEND;VALUE=DATE:20260710
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Ballot results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Confirm entry
+DESCRIPTION:Successful applicants had to confirm details\, and pay any ba
+ lance\, by 16:00 British Summer Time on Friday 31 July 2026. https://www
+ .tcslondonmarathon.com/ Confirm on the official site before you act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:payment
+DTSTART:20260731T150000Z
+DTEND:20260731T151500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Confirm entry
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-good-for-age-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Good for Age opens
+DESCRIPTION:UK residents with a qualifying time. The window opened on 1 O
+ ctober 2026. The opening hour is not stored. About 6\,000 places\, faste
+ st first\, so the standard alone does not guarantee a place. https://www
+ .tcslondonmarathon.com/ Confirm on the official site before you act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:qualifier_open
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Good for Age opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-good-for-age-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Good for Age closes
+DESCRIPTION:Closes at 16:00 UK time on Thursday 29 October 2026. Clocks h
+ ave gone back\, so this is GMT. https://www.tcslondonmarathon.com/ Confi
+ rm on the official site before you act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:qualifier_close
+DTSTART:20261029T160000Z
+DTEND:20261029T161500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Good for Age closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:london-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:London 2027 · Race weekend
+DESCRIPTION:Saturday 24 April and Sunday 25 April 2027. Your confirmation
+  says which day you have. The countdown starts at the beginning of Satur
+ day in London. https://www.tcslondonmarathon.com/ Confirm on the officia
+ l site before you act.
+LOCATION:London\, United Kingdom
+URL:https://www.tcslondonmarathon.com/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270424
+DTEND;VALUE=DATE:20270426
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:London 2027 · Race weekend
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:cape-town-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Cape Town 2027 · Ballot opens
+DESCRIPTION:The 2027 ballot opened on 10 June 2026. The hour is not store
+ d. https://capetownmarathon.com/ Confirm on the official site before you
+  act.
+LOCATION:Cape Town\, South Africa
+URL:https://capetownmarathon.com/
+CATEGORIES:ballot_open
+DTSTART;VALUE=DATE:20260610
+DTEND;VALUE=DATE:20260611
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Cape Town 2027 · Ballot opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:cape-town-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Cape Town 2027 · Ballot closes
+DESCRIPTION:The 2027 ballot closed on 24 June 2026. The hour is not store
+ d. https://capetownmarathon.com/ Confirm on the official site before you
+  act.
+LOCATION:Cape Town\, South Africa
+URL:https://capetownmarathon.com/
+CATEGORIES:ballot_close
+DTSTART;VALUE=DATE:20260624
+DTEND;VALUE=DATE:20260625
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Cape Town 2027 · Ballot closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:cape-town-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Cape Town 2027 · Ballot results
+DESCRIPTION:Results were notified on 26 June 2026. https://capetownmarath
+ on.com/ Confirm on the official site before you act.
+LOCATION:Cape Town\, South Africa
+URL:https://capetownmarathon.com/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260626
+DTEND;VALUE=DATE:20260627
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Cape Town 2027 · Ballot results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:cape-town-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Cape Town 2027 · Race fee charged
+DESCRIPTION:The race fee is charged when the result is issued\, not as a 
+ later invoice. The application fee was ZAR 5. https://capetownmarathon.c
+ om/ Confirm on the official site before you act.
+LOCATION:Cape Town\, South Africa
+URL:https://capetownmarathon.com/
+CATEGORIES:payment
+DTSTART;VALUE=DATE:20260626
+DTEND;VALUE=DATE:20260627
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Cape Town 2027 · Race fee charged
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:cape-town-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Cape Town 2027 · Race day
+DESCRIPTION:Sunday 23 May 2027. First edition as a World Marathon Major. 
+ South Africa does not use daylight saving. https://capetownmarathon.com/
+  Confirm on the official site before you act.
+LOCATION:Cape Town\, South Africa
+URL:https://capetownmarathon.com/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270523
+DTEND;VALUE=DATE:20270524
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Cape Town 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:sydney-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Sydney 2027 · Ballot opens
+DESCRIPTION:Opened on 29 September 2026. That morning was still Australia
+ n Eastern Standard Time. The opening hour is not stored. https://www.syd
+ neymarathon.com/ Confirm on the official site before you act.
+LOCATION:Sydney\, Australia
+URL:https://www.sydneymarathon.com/
+CATEGORIES:ballot_open
+DTSTART;VALUE=DATE:20260929
+DTEND;VALUE=DATE:20260930
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Sydney 2027 · Ballot opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:sydney-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Sydney 2027 · Ballot closes
+DESCRIPTION:Closed at 10:00 Australian Eastern Daylight Time on Monday 19
+  October 2026\, which is 23:00 UTC on 18 October. https://www.sydneymara
+ thon.com/ Confirm on the official site before you act.
+LOCATION:Sydney\, Australia
+URL:https://www.sydneymarathon.com/
+CATEGORIES:ballot_close
+DTSTART:20261018T230000Z
+DTEND:20261018T231500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Sydney 2027 · Ballot closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:sydney-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Sydney 2027 · Ballot results
+DESCRIPTION:Applicants are told on 3 November 2026. The hour is not publi
+ shed. https://www.sydneymarathon.com/ Confirm on the official site befor
+ e you act.
+LOCATION:Sydney\, Australia
+URL:https://www.sydneymarathon.com/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261104
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Sydney 2027 · Ballot results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:sydney-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Sydney 2027 · Fee charged if drawn
+DESCRIPTION:The entry fee is charged automatically on the result. There i
+ s no later public payment deadline. https://www.sydneymarathon.com/ Conf
+ irm on the official site before you act.
+LOCATION:Sydney\, Australia
+URL:https://www.sydneymarathon.com/
+CATEGORIES:payment
+DTSTART;VALUE=DATE:20261103
+DTEND;VALUE=DATE:20261104
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Sydney 2027 · Fee charged if drawn
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:sydney-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Sydney 2027 · Race day
+DESCRIPTION:Sunday 29 August 2027. August is Australian Eastern Standard 
+ Time. The countdown uses the calendar day\, not a wave start. https://ww
+ w.sydneymarathon.com/ Confirm on the official site before you act.
+LOCATION:Sydney\, Australia
+URL:https://www.sydneymarathon.com/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270829
+DTEND;VALUE=DATE:20270830
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Sydney 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:berlin-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Berlin 2027 · Lottery opens
+DESCRIPTION:The 2027 lottery opened on 1 October 2026. The opening hour i
+ s not stored. Central European Summer Time was still in effect. https://
+ www.generali-berlin-marathon.com/en/registration/run Confirm on the offi
+ cial site before you act.
+LOCATION:Berlin\, Germany
+URL:https://www.generali-berlin-marathon.com/en/
+CATEGORIES:ballot_open
+DTSTART;VALUE=DATE:20261001
+DTEND;VALUE=DATE:20261002
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Berlin 2027 · Lottery opens
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:berlin-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Berlin 2027 · Lottery closes
+DESCRIPTION:The lottery closes on Thursday 12 November 2026. The organise
+ r's published cutoff for deferred-entry codes that day is 23:59 CET. Con
+ firm the form's own hour if you apply on the last day. https://www.gener
+ ali-berlin-marathon.com/en/registration/run Confirm on the official site
+  before you act.
+LOCATION:Berlin\, Germany
+URL:https://www.generali-berlin-marathon.com/en/
+CATEGORIES:ballot_close
+DTSTART:20261112T225900Z
+DTEND:20261112T231400Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Berlin 2027 · Lottery closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:berlin-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Berlin 2027 · Lottery results
+DESCRIPTION:Results are emailed on Thursday 3 December 2026. The hour is 
+ not published. https://www.generali-berlin-marathon.com/en/registration/
+ run Confirm on the official site before you act.
+LOCATION:Berlin\, Germany
+URL:https://www.generali-berlin-marathon.com/en/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20261203
+DTEND;VALUE=DATE:20261204
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Berlin 2027 · Lottery results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:berlin-2027-payment@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Berlin 2027 · Payment processing
+DESCRIPTION:If you are selected\, the entry fee is processed from 4 Decem
+ ber 2026. The organiser says the bank can take up to a week. https://www
+ .generali-berlin-marathon.com/en/registration/run Confirm on the officia
+ l site before you act.
+LOCATION:Berlin\, Germany
+URL:https://www.generali-berlin-marathon.com/en/
+CATEGORIES:payment
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261212
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Berlin 2027 · Payment processing
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:berlin-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Berlin 2027 · Race day
+DESCRIPTION:Sunday 26 September 2027. The countdown uses the calendar day
+  in Berlin\, not a wave start. https://www.generali-berlin-marathon.com/
+ en/registration/run Confirm on the official site before you act.
+LOCATION:Berlin\, Germany
+URL:https://www.generali-berlin-marathon.com/en/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20270926
+DTEND;VALUE=DATE:20270927
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Berlin 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-ballot-open@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Applications open
+DESCRIPTION:Guaranteed and non-guaranteed applications opened at 08:00 US
+  Central on Thursday 8 October 2026. https://www.chicagomarathon.com/app
+ ly/ Confirm on the official site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:ballot_open
+DTSTART:20261008T130000Z
+DTEND:20261008T131500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Applications open
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-ballot-close@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Applications close
+DESCRIPTION:Applications close at 14:00 US Central on Thursday 29 October
+  2026. https://www.chicagomarathon.com/apply/ Confirm on the official si
+ te before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:ballot_close
+DTSTART:20261029T190000Z
+DTEND:20261029T191500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Applications close
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-payment-guaranteed@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Guaranteed entry payment
+DESCRIPTION:Approved guaranteed-entry applicants must pay by 23:59 US Cen
+ tral on Tuesday 10 November 2026. Central Standard Time is in effect. ht
+ tps://www.chicagomarathon.com/apply/ Confirm on the official site before
+  you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:payment
+DTSTART:20261111T055900Z
+DTEND:20261111T061400Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Guaranteed entry payment
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Drawing results
+DESCRIPTION:Non-guaranteed applicants are emailed through Tuesday 8 Decem
+ ber 2026. There is not a single send time. https://www.chicagomarathon.c
+ om/apply/ Confirm on the official site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20261208
+DTEND;VALUE=DATE:20261209
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Drawing results
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-payment-drawing@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Drawing payment
+DESCRIPTION:Runners selected in the drawing must pay and finish registrat
+ ion by 23:59 US Central on Tuesday 15 December 2026. https://www.chicago
+ marathon.com/apply/ Confirm on the official site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:payment
+DTSTART:20261216T055900Z
+DTEND:20261216T061400Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Drawing payment
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-expo@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Expo
+DESCRIPTION:Abbott Health & Fitness Expo at McCormick Place. Thursday 7 O
+ ctober 2027 10:00–18:00\, Friday 8 October 09:00–18:00\, Saturday 9 Octo
+ ber 09:00–18:00 Central. Hours can change. No race-morning pickup. Photo
+  ID is required. https://www.chicagomarathon.com/apply/ Confirm on the o
+ fficial site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:expo
+DTSTART:20271007T150000Z
+DTEND:20271009T230000Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Expo
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-expo-end@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Expo closes
+DESCRIPTION:Abbott Health & Fitness Expo at McCormick Place. Thursday 7 O
+ ctober 2027 10:00–18:00\, Friday 8 October 09:00–18:00\, Saturday 9 Octo
+ ber 09:00–18:00 Central. Hours can change. No race-morning pickup. Photo
+  ID is required. https://www.chicagomarathon.com/apply/ Confirm on the o
+ fficial site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:expo
+DTSTART:20271009T230000Z
+DTEND:20271009T231500Z
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Expo closes
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:chicago-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Chicago 2027 · Race day
+DESCRIPTION:Sunday 10 October 2027. The countdown uses the calendar day i
+ n Chicago\, not a wave start. https://www.chicagomarathon.com/apply/ Con
+ firm on the official site before you act.
+LOCATION:Chicago\, United States
+URL:https://www.chicagomarathon.com/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20271010
+DTEND;VALUE=DATE:20271011
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Chicago 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:nyc-2027-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:NYC 2027 · Race day
+DESCRIPTION:Sunday 7 November 2027. US clocks go back at 02:00 that morni
+ ng. The countdown uses the calendar day\, not a wave start. The drawing 
+ dates are still unpublished. https://www.nyrr.org/tcsnycmarathon Confirm
+  on the official site before you act.
+LOCATION:New York\, United States
+URL:https://www.nyrr.org/tcsnycmarathon
+CATEGORIES:race
+DTSTART;VALUE=DATE:20271107
+DTEND;VALUE=DATE:20271108
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:NYC 2027 · Race day
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:shanghai-2026-result@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Shanghai 2026 · Selected field
+DESCRIPTION:The organiser announced the selected list on 30 June 2026. Ch
+ ina does not use daylight saving. https://www.shang-ma.com/ Confirm on t
+ he official site before you act.
+LOCATION:Shanghai\, China
+URL:https://www.shang-ma.com/
+CATEGORIES:result
+DTSTART;VALUE=DATE:20260630
+DTEND;VALUE=DATE:20260701
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Shanghai 2026 · Selected field
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:shanghai-2026-race@marathon-race
+DTSTAMP:20261024T000000Z
+SUMMARY:Shanghai 2026 · Race day
+DESCRIPTION:Sunday 6 December 2026\, the second Abbott World Marathon Maj
+ ors evaluation race. Not yet a Major. https://www.shang-ma.com/ Confirm 
+ on the official site before you act.
+LOCATION:Shanghai\, China
+URL:https://www.shang-ma.com/
+CATEGORIES:race
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Shanghai 2026 · Race day
+END:VALARM
+END:VEVENT
+END:VCALENDAR
