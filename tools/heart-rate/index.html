@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-root="../.." data-page="heart-rate">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Heart rate zones — Marathon Race</title>
+  <meta name="description" content="Estimate heart-rate zones from age with the 220 minus age formula.">
+  <link rel="canonical" href="https://kelvinccho.github.io/marathon-race/tools/heart-rate/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/json" title="Events JSON" href="../../data/events.json">
+  <link rel="alternate" type="application/json" title="Milestones JSON" href="../../data/milestones.json">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <meta property="og:title" content="Heart rate zones — Marathon Race">
+  <meta property="og:description" content="Estimate heart-rate zones from age with the 220 minus age formula.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kelvinccho.github.io/marathon-race/tools/heart-rate/">
+  
+</head>
+<body>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Heart rate zones</h1><p>220 minus age is a rough estimate, not a test.</p></article><article lang="zh-Hant"><h1>心率區間</h1><p>220 減去年齡只是粗略估計，不是檢測。</p></article></noscript>
+  <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/site.js"></script>
+</body>
+</html>
