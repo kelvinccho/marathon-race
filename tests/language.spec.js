@@ -36,6 +36,10 @@ test("English is the default and event names stay in English", async ({ page }) 
   await expect(page.locator(".countdown .fine").first()).toContainText("New York");
   await expect(page.locator(".race-list")).toContainText("TCS London Marathon");
   await expect(page.locator(".race-list")).toContainText("TCS Sydney Marathon");
+  const row = page.locator(".race-row").first();
+  const rowBox = await row.boundingBox();
+  const timeBox = await row.locator("time").boundingBox();
+  expect(timeBox.x).toBeGreaterThan(rowBox.x + 10);
   await expect(page.locator('[data-action="lang"][data-lang="en"]')).toHaveAttribute("aria-pressed", "true");
 });
 
