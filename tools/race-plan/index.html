@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-root="../.." data-page="race-plan">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Race Plan — Marathon Race</title>
+  <meta name="description" content="PaceBest plans a marathon you can follow on the day: pace, heart rate, and gel reminders.">
+  <link rel="canonical" href="https://kelvinccho.github.io/marathon-race/tools/race-plan/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/json" title="Events JSON" href="../../data/events.json">
+  <link rel="alternate" type="application/json" title="Milestones JSON" href="../../data/milestones.json">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <meta property="og:title" content="Race Plan — Marathon Race">
+  <meta property="og:description" content="PaceBest plans a marathon you can follow on the day: pace, heart rate, and gel reminders.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kelvinccho.github.io/marathon-race/tools/race-plan/">
+  
+</head>
+<body>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Race Plan</h1><p>PaceBest plans a race you can follow on the day.</p></article><article lang="zh-Hant"><h1>賽事計劃</h1><p>PaceBest 用來規劃比賽當天可以跟著跑的配速。</p></article></noscript>
+  <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/site.js"></script>
+</body>
+</html>

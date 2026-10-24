@@ -1,6 +1,15 @@
 (function () {
+  const TESTFLIGHT_URL = "";
   const MR = window.MRLogic;
   const I18N = window.MRI18n;
+  const TOOLS = [
+    ["race-plan", "Race Plan", "tools/race-plan/"],
+    ["pace", "Pace calculator", "tools/pace/"],
+    ["heart-rate", "Heart rate", "tools/heart-rate/"],
+    ["pace-chart", "Pace chart", "tools/pace-chart/"],
+    ["gel", "Gel and carbs", "tools/gel/"],
+  ];
+  const ZONE_NAMES = ["Recovery", "Easy", "Steady", "Threshold", "Hard"];
   const FLAGS = { US: "🇺🇸", JP: "🇯🇵", GB: "🇬🇧", ZA: "🇿🇦", AU: "🇦🇺", DE: "🇩🇪", CN: "🇨🇳" };
   const CHECKS = [
     ["entered", "Application submitted"],
@@ -21,6 +30,11 @@
     types: [],
     lang: "en",
     menuOpen: false,
+    toolsOpen: false,
+    pace: blankPace(),
+    chart: blankChart(),
+    heart: { age: "", error: "", result: null },
+    gel: { hours: "", minutes: "", gramsPerHour: "60", gramsPerGel: "22", drinkPerHour: "0", error: "", result: null },
     plan: { ids: [], checks: {} },
     alerts: { email: "", eventIds: [], types: MR.MILESTONE_TYPES.slice() },
     alertSaved: false,
@@ -83,7 +97,16 @@
     return I18N.localize(state.data, state.lang);
   }
 
+  function blankPace() {
+    return { distance: "marathon", customKm: "", hours: "", minutes: "", seconds: "", paceMin: "", paceSec: "", error: "", result: null };
+  }
+
+  function blankChart() {
+    return { distance: "marathon", customKm: "", unit: "km", hours: "", minutes: "", seconds: "", paceMin: "", paceSec: "", error: "", result: null };
+  }
+
   function render() {
+    captureTools();
     const page = document.documentElement.dataset.page;
     MR.setLocale(langTag());
     document.documentElement.lang = state.lang === "zh-Hant" ? "zh-Hant" : "en";
@@ -96,6 +119,11 @@
       plan: `${t("Plan your race")} — ${brand}`,
       about: `${t("About")} — ${brand}`,
       alerts: `${t("Get alerts")} — ${brand}`,
+      "race-plan": `${t("Race Plan")} — ${brand}`,
+      pace: `${t("Pace calculator")} — ${brand}`,
+      "heart-rate": `${t("Heart rate zones")} — ${brand}`,
+      "pace-chart": `${t("Pace chart")} — ${brand}`,
+      gel: `${t("Gel and carbs")} — ${brand}`,
     };
     document.title = titles[page] || titles.home;
     rememberBoundary();
@@ -106,6 +134,11 @@
       plan: renderPlan,
       about: renderAbout,
       alerts: renderAlerts,
+      "race-plan": renderRacePlan,
+      pace: renderPace,
+      "heart-rate": renderHeart,
+      "pace-chart": renderPaceChart,
+      gel: renderGel,
     }[page] || renderHome;
     document.getElementById("app").innerHTML = `${header(page)}<main id="content" class="page">${body()}</main>${footer()}`;
     paintClock();
@@ -124,6 +157,7 @@
             ${link("events", esc(t("Events")), "events/")}
             ${link("plan", esc(t("Plan your race")), "plan/")}
             ${link("about", esc(t("About")), "about/")}
+            ${toolMenu(page)}
             <div class="lang-switch" role="group" aria-label="${esc(t("Language"))}">${langButton("en", "EN")}${langButton("zh-Hant", "繁體")}</div>
           </div>
           <a class="nav-alert" href="${esc(url("alerts/"))}"${page === "alerts" ? ' aria-current="page"' : ""}>${esc(t("Get Alerts"))}</a>
@@ -133,6 +167,16 @@
           <span class="menu-icon" aria-hidden="true"></span>
         </button>
       </div></header>`;
+  }
+
+  function toolMenu(page) {
+    const open = state.toolsOpen;
+    const current = TOOLS.some(([id]) => id === page);
+    const links = TOOLS.map(([id, label, path]) => `<a href="${esc(url(path))}"${page === id ? ' aria-current="page"' : ""}>${esc(t(label))}</a>`).join("");
+    return `<div class="nav-drop${open ? " is-open" : ""}${current ? " is-current" : ""}">
+      <button class="nav-drop-button" type="button" data-action="tools" aria-expanded="${open ? "true" : "false"}" aria-controls="tool-menu" aria-haspopup="true">${esc(t("Tool"))}<span class="caret" aria-hidden="true"></span></button>
+      <div class="nav-drop-panel" id="tool-menu">${links}</div>
+    </div>`;
   }
 
   function footer() {
@@ -512,8 +556,334 @@ const next = data.milestones
     </div>`;
   }
 
+  function renderRacePlan() {
+    return `<div class="wrap prose">
+      <p class="eyebrow">${esc(t("Tool"))}</p>
+      <h1>PaceBest</h1>
+      <p class="lede">${esc(t("PaceBest plans a race you can follow on the day."))}</p>
+      <p>${esc(t("The tagline is PB: Plan your Marathon. It runs on iPhone, and on Apple Watch when you want the plan on your wrist."))}</p>
+      <ul>
+        <li>${esc(t("A race is split into distance segments. Each segment has a target pace and an optional heart-rate range. Gel and water reminders can sit on the timeline by time or distance."))}</li>
+        <li>${esc(t("Marathon, half marathon, 10K, and a custom distance."))}</li>
+        <li>${esc(t("Kilometres or miles."))}</li>
+        <li>${esc(t("Apple Watch guidance, with the same plan mirrored on iPhone."))}</li>
+        <li>${esc(t("Plans stay on the device. No account."))}</li>
+        <li>${esc(t("One saved plan is free. More plans are a one-time purchase in the app."))}</li>
+        <li>${esc(t("It needs iOS 26 or later, and watchOS 26 or later for the watch."))}</li>
+      </ul>
+      ${testFlightLink()}
+      <p class="fine">${esc(t("A planning tool, not medical or coaching advice."))}</p>
+    </div>`;
+  }
+
+  function testFlightLink() {
+    if (/^https:\/\/testflight\.apple\.com\/join\/[A-Za-z0-9]+$/.test(TESTFLIGHT_URL)) {
+      return `<p><a class="button" href="${esc(TESTFLIGHT_URL)}">${esc(t("Install with TestFlight"))}</a></p>`;
+    }
+    return `<p>${esc(t("The public TestFlight link is not published yet."))}</p>`;
+  }
+
+  function renderPace() {
+    const pace = state.pace;
+    return `<div class="wrap">
+      <p class="eyebrow">${esc(t("Tool"))}</p>
+      <h1>${esc(t("Pace calculator"))}</h1>
+      <form class="tool-form" data-pace-form>
+        <div class="tool-fields">${distanceFields(pace)}</div>
+        ${clockFields(t("Finish time"), pace)}
+        ${paceFields(pace)}
+        <div class="tool-actions">
+          <button class="button" type="submit" data-calc="pace">${esc(t("Calculate pace"))}</button>
+          <button class="button-ghost" type="submit" data-calc="finish">${esc(t("Calculate finish time"))}</button>
+        </div>
+      </form>
+      <div class="tool-result">${toolMessage(pace.error, pace.result ? paceReadout(pace.result) : "")}</div>
+      <p class="fine">${esc(t("A planning tool, not medical or coaching advice."))}</p>
+    </div>`;
+  }
+
+  function renderPaceChart() {
+    const chart = state.chart;
+    return `<div class="wrap">
+      <p class="eyebrow">${esc(t("Tool"))}</p>
+      <h1>${esc(t("Pace chart"))}</h1>
+      <form class="tool-form" data-chart-form>
+        <div class="tool-fields">
+          ${distanceFields(chart)}
+          <label>${esc(t("Unit"))}<select name="unit" data-action="tool-unit"><option value="km"${chart.unit === "km" ? " selected" : ""}>${esc(t("Kilometres"))}</option><option value="mi"${chart.unit === "mi" ? " selected" : ""}>${esc(t("Miles"))}</option></select></label>
+        </div>
+        ${clockFields(t("Finish time"), chart)}
+        ${paceFields(chart)}
+        <div class="tool-actions"><button class="button" type="submit">${esc(t("Show chart"))}</button></div>
+      </form>
+      <div class="tool-result">${toolMessage(chart.error, chart.result ? chartTable(chart.result) : "")}</div>
+      <p class="fine">${esc(t("Even pace. The last row is the exact distance."))}</p>
+    </div>`;
+  }
+
+  function renderHeart() {
+    const heart = state.heart;
+    const table = heart.result ? `<p>${esc(t("Estimated maximum"))} <strong>${esc(String(heart.result.max))} ${esc(t("bpm"))}</strong></p>
+      <div class="chart-scroll"><table class="tool-table"><thead><tr><th>${esc(t("Zone"))}</th><th>${esc(t("Range"))}</th></tr></thead><tbody>
+      ${heart.result.zones.map((zone) => `<tr><td>${esc(String(zone.zone))} · ${esc(t(ZONE_NAMES[zone.zone - 1]))}</td><td>${esc(String(zone.low))}–${esc(String(zone.high))}</td></tr>`).join("")}
+      </tbody></table></div>` : "";
+    return `<div class="wrap">
+      <p class="eyebrow">${esc(t("Tool"))}</p>
+      <h1>${esc(t("Heart rate zones"))}</h1>
+      <form class="tool-form" data-hr-form>
+        <div class="tool-fields"><label>${esc(t("Age"))}<input name="age" type="number" min="10" max="100" step="1" inputmode="numeric" value="${esc(heart.age)}"></label></div>
+        <div class="tool-actions"><button class="button" type="submit">${esc(t("Show zones"))}</button></div>
+      </form>
+      <div class="tool-result">${toolMessage(heart.error, table)}</div>
+      <p class="fine">${esc(t("220 minus age is a rough estimate, not a test."))} ${esc(t("A planning tool, not medical or coaching advice."))}</p>
+    </div>`;
+  }
+
+  function renderGel() {
+    const gel = state.gel;
+    return `<div class="wrap">
+      <p class="eyebrow">${esc(t("Tool"))}</p>
+      <h1>${esc(t("Gel and carbs"))}</h1>
+      <form class="tool-form" data-gel-form>
+        <div class="tool-fields">
+          <label>${esc(t("Hours"))}<input name="hours" type="number" min="0" step="1" inputmode="numeric" value="${esc(gel.hours)}"></label>
+          <label>${esc(t("Minutes"))}<input name="minutes" type="number" min="0" step="1" inputmode="numeric" value="${esc(gel.minutes)}"></label>
+          <label>${esc(t("Carbs per hour"))}<input name="gramsPerHour" type="number" min="0" step="1" inputmode="decimal" value="${esc(gel.gramsPerHour)}"></label>
+          <label>${esc(t("Carbs per gel"))}<input name="gramsPerGel" type="number" min="0" step="1" inputmode="decimal" value="${esc(gel.gramsPerGel)}"></label>
+          <label>${esc(t("Drink carbs per hour"))}<input name="drinkPerHour" type="number" min="0" step="1" inputmode="decimal" value="${esc(gel.drinkPerHour)}"></label>
+        </div>
+        <div class="tool-actions"><button class="button" type="submit">${esc(t("Calculate"))}</button></div>
+      </form>
+      <div class="tool-result">${toolMessage(gel.error, gel.result ? gelReadout(gel.result) : "")}</div>
+      <p class="fine">${esc(t("Common planning ranges are 30–90 g of carbohydrate per hour. Many gels are 20–25 g. This is not a nutrition prescription."))}</p>
+    </div>`;
+  }
+
+  function distanceFields(values) {
+    const options = [["5k", "5K"], ["10k", "10K"], ["half", t("Half marathon")], ["marathon", t("Marathon")], ["custom", t("Custom")]];
+    const select = options.map(([id, label]) => `<option value="${id}"${values.distance === id ? " selected" : ""}>${esc(label)}</option>`).join("");
+    const custom = values.distance === "custom"
+      ? `<label>${esc(t("Custom kilometres"))}<input name="customKm" type="number" min="0" step="0.001" inputmode="decimal" value="${esc(values.customKm)}"></label>`
+      : "";
+    return `<label>${esc(t("Distance"))}<select name="distance" data-action="tool-distance">${select}</select></label>${custom}`;
+  }
+
+  function clockFields(legend, values) {
+    return `<fieldset class="tool-clock"><legend>${esc(legend)}</legend>
+      <label>${esc(t("Hours"))}<input name="hours" type="number" min="0" step="1" inputmode="numeric" value="${esc(values.hours)}"></label>
+      <label>${esc(t("Minutes"))}<input name="minutes" type="number" min="0" step="1" inputmode="numeric" value="${esc(values.minutes)}"></label>
+      <label>${esc(t("Seconds"))}<input name="seconds" type="number" min="0" step="1" inputmode="numeric" value="${esc(values.seconds)}"></label>
+    </fieldset>`;
+  }
+
+  function paceFields(values) {
+    return `<fieldset class="tool-clock"><legend>${esc(t("Pace per kilometre"))}</legend>
+      <label>${esc(t("Minutes"))}<input name="paceMin" type="number" min="0" step="1" inputmode="numeric" value="${esc(values.paceMin)}"></label>
+      <label>${esc(t("Seconds"))}<input name="paceSec" type="number" min="0" step="1" inputmode="numeric" value="${esc(values.paceSec)}"></label>
+    </fieldset>`;
+  }
+
+  function toolMessage(error, body) {
+    if (error) return `<p class="tool-error">${esc(t(error))}</p>`;
+    return body || "";
+  }
+
+  function paceReadout(plan) {
+    return `<div class="pace-readout">
+      <article><span>${esc(t("Finish time"))}</span><strong>${esc(formatClock(plan.totalSeconds))}</strong></article>
+      <article><span>${esc(t("Pace per kilometre"))}</span><strong>${esc(formatPace(plan.secPerKm))}</strong></article>
+      <article><span>${esc(t("Pace per mile"))}</span><strong>${esc(formatPace(plan.secPerMile))}</strong></article>
+    </div>`;
+  }
+
+  function chartTable(plan) {
+    const rows = plan.rows.map((row) => {
+      const mark = row.finish || splitMark(row, plan.unit);
+      return `<tr${mark ? ' class="is-mark"' : ""}><td>${esc(formatSplit(row, plan.unit))}</td><td>${esc(formatClock(row.seconds))}</td></tr>`;
+    }).join("");
+    const unit = plan.unit === "mi" ? "mi" : "km";
+    return `<div class="chart-scroll"><table class="tool-table"><thead><tr><th>${esc(t("Split"))} (${unit})</th><th>${esc(t("Cumulative"))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function gelReadout(plan) {
+    const line = plan.gels === 0
+      ? `<p>${esc(t("The drink already covers this target."))}</p>`
+      : `<p>${esc(t("About every"))} ${esc(formatAmount(plan.intervalMinutes))} ${esc(t("minutes."))}</p>`;
+    return `<div class="pace-readout">
+      <article><span>${esc(t("Carb target"))}</span><strong>${esc(formatAmount(plan.totalCarbs))} g</strong></article>
+      <article><span>${esc(t("From drink"))}</span><strong>${esc(formatAmount(plan.drinkCarbs))} g</strong></article>
+      <article><span>${esc(t("From gels"))}</span><strong>${esc(formatAmount(plan.gelCarbs))} g</strong></article>
+      <article><span>${esc(t("Gels"))}</span><strong>${esc(String(plan.gels))}</strong></article>
+    </div>${line}`;
+  }
+
+  function splitMark(row, unit) {
+    const step = unit === "mi" ? row.distanceKm / 1.609344 : row.distanceKm;
+    const nearest = Math.round(step);
+    return Math.abs(step - nearest) < 1e-4 && nearest % 5 === 0;
+  }
+
+  function formatSplit(row, unit) {
+    const step = unit === "mi" ? row.distanceKm / 1.609344 : row.distanceKm;
+    if (row.finish) {
+      const rounded = Math.round(step * 1000) / 1000;
+      return Number.isInteger(rounded) ? String(rounded) : String(rounded);
+    }
+    return String(Math.round(step));
+  }
+
+  function formatPace(seconds) {
+    const rounded = Math.round(seconds);
+    return `${Math.floor(rounded / 60)}:${pad(rounded % 60)}`;
+  }
+
+  function formatClock(seconds) {
+    const rounded = Math.max(0, Math.round(seconds));
+    const hours = Math.floor(rounded / 3600);
+    const minutes = Math.floor((rounded % 3600) / 60);
+    const secs = rounded % 60;
+    if (hours) return `${hours}:${pad(minutes)}:${pad(secs)}`;
+    return `${minutes}:${pad(secs)}`;
+  }
+
+  function formatAmount(value) {
+    const rounded = Math.round(Number(value) * 10) / 10;
+    if (!Number.isFinite(rounded)) return "";
+    return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+  }
+
+  function clockSeconds(hours, minutes, seconds) {
+    const h = Number(hours || 0);
+    const m = Number(minutes || 0);
+    const s = Number(seconds || 0);
+    if (![h, m, s].every((part) => Number.isFinite(part) && part >= 0)) return null;
+    const total = h * 3600 + m * 60 + s;
+    return total > 0 ? total : null;
+  }
+
+  function paceSeconds(minutes, seconds) {
+    const m = Number(minutes);
+    const s = Number(seconds);
+    if (!Number.isFinite(m) || !Number.isFinite(s) || m < 0 || s < 0) return null;
+    const total = m * 60 + s;
+    return total > 0 ? total : null;
+  }
+
+  function readNamed(form) {
+    const data = {};
+    new FormData(form).forEach((value, key) => {
+      data[key] = String(value);
+    });
+    return data;
+  }
+
+  function captureTools() {
+    const pace = document.querySelector("[data-pace-form]");
+    if (pace) Object.assign(state.pace, readNamed(pace));
+    const chart = document.querySelector("[data-chart-form]");
+    if (chart) Object.assign(state.chart, readNamed(chart));
+    const heart = document.querySelector("[data-hr-form]");
+    if (heart) Object.assign(state.heart, readNamed(heart));
+    const gel = document.querySelector("[data-gel-form]");
+    if (gel) Object.assign(state.gel, readNamed(gel));
+  }
+
+  function applyPace(mode) {
+    const form = document.querySelector("[data-pace-form]");
+    if (!form) return;
+    const fields = readNamed(form);
+    Object.assign(state.pace, fields);
+    const km = MR.distanceKm(fields.distance, fields.customKm);
+    if (!km) {
+      state.pace.error = "Enter a distance.";
+      state.pace.result = null;
+      keepScroll(render);
+      return;
+    }
+    const total = mode === "finish"
+      ? (() => {
+        const pace = paceSeconds(fields.paceMin, fields.paceSec);
+        return pace == null ? null : pace * km;
+      })()
+      : clockSeconds(fields.hours, fields.minutes, fields.seconds);
+    if (total == null) {
+      state.pace.error = mode === "finish" ? "Enter a pace." : "Enter a finish time.";
+      state.pace.result = null;
+      keepScroll(render);
+      return;
+    }
+    state.pace.error = "";
+    state.pace.result = MR.pacePlan(km, total);
+    keepScroll(render);
+  }
+
+  function applyChart() {
+    const form = document.querySelector("[data-chart-form]");
+    if (!form) return;
+    const fields = readNamed(form);
+    Object.assign(state.chart, fields);
+    const km = MR.distanceKm(fields.distance, fields.customKm);
+    if (!km) {
+      state.chart.error = "Enter a distance.";
+      state.chart.result = null;
+      keepScroll(render);
+      return;
+    }
+    let total = clockSeconds(fields.hours, fields.minutes, fields.seconds);
+    if (total == null) {
+      const pace = paceSeconds(fields.paceMin, fields.paceSec);
+      total = pace == null ? null : pace * km;
+    }
+    if (total == null) {
+      state.chart.error = "Enter a finish time.";
+      state.chart.result = null;
+      keepScroll(render);
+      return;
+    }
+    state.chart.error = "";
+    state.chart.result = MR.paceChart(km, total, fields.unit === "mi" ? "mi" : "km");
+    keepScroll(render);
+  }
+
+  function applyHeart() {
+    const form = document.querySelector("[data-hr-form]");
+    if (!form) return;
+    const fields = readNamed(form);
+    Object.assign(state.heart, fields);
+    const zones = MR.heartZones(Number(fields.age));
+    state.heart.error = zones ? "" : "Enter an age from 10 to 100.";
+    state.heart.result = zones;
+    keepScroll(render);
+  }
+
+  function applyGel() {
+    const form = document.querySelector("[data-gel-form]");
+    if (!form) return;
+    const fields = readNamed(form);
+    Object.assign(state.gel, fields);
+    const hours = Number(fields.hours || 0);
+    const minutes = Number(fields.minutes || 0);
+    const plan = MR.gelPlan({
+      minutes: hours * 60 + minutes,
+      gramsPerHour: fields.gramsPerHour,
+      gramsPerGel: fields.gramsPerGel,
+      drinkPerHour: fields.drinkPerHour,
+    });
+    state.gel.error = plan ? "" : "Enter a duration, a carb target, and the carbs in one gel.";
+    state.gel.result = plan;
+    keepScroll(render);
+  }
+
   function onKey(event) {
-    if (event.key !== "Escape" || !state.menuOpen) return;
+    if (event.key !== "Escape") return;
+    if (state.toolsOpen) {
+      state.toolsOpen = false;
+      keepScroll(render);
+      const button = document.querySelector(".nav-drop-button");
+      if (button) button.focus();
+      return;
+    }
+    if (!state.menuOpen) return;
     state.menuOpen = false;
     keepScroll(render);
     const button = document.querySelector(".menu-button");
@@ -521,8 +891,14 @@ const next = data.milestones
   }
 
   function onClick(event) {
+    const insideDrop = event.target.closest(".nav-drop");
+    const closedTools = state.toolsOpen && !insideDrop;
+    if (closedTools) state.toolsOpen = false;
     const target = event.target.closest("[data-action]");
-    if (!target) return;
+    if (!target) {
+      if (closedTools && !event.target.closest("a[href], button")) keepScroll(render);
+      return;
+    }
     const action = target.dataset.action;
     if (action === "month") {
       const next = MR.shiftMonth(state.year, state.month, Number(target.dataset.delta));
@@ -562,6 +938,9 @@ const next = data.milestones
       else state.types.push(type);
       saveView();
       keepScroll(render);
+    } else if (action === "tools") {
+      state.toolsOpen = !state.toolsOpen;
+      keepScroll(render);
     } else if (action === "menu") {
       state.menuOpen = !state.menuOpen;
       keepScroll(render);
@@ -569,6 +948,7 @@ const next = data.milestones
       if (focusTarget) focusTarget.focus();
     } else if (action === "lang") {
       state.lang = target.dataset.lang === "zh-Hant" ? "zh-Hant" : "en";
+      state.toolsOpen = false;
       localStorage.setItem("marathon-race-lang", state.lang);
       MR.setLocale(langTag());
       render();
@@ -601,7 +981,9 @@ const next = data.milestones
 
   function onChange(event) {
     const target = event.target;
-    if (target.dataset.action === "plan-toggle") {
+    if (target.dataset.action === "tool-distance" || target.dataset.action === "tool-unit") {
+      keepScroll(render);
+    } else if (target.dataset.action === "plan-toggle") {
       if (target.checked && !state.plan.ids.includes(target.dataset.id)) state.plan.ids.push(target.dataset.id);
       if (!target.checked) state.plan.ids = state.plan.ids.filter((id) => id !== target.dataset.id);
       savePlan();
@@ -614,7 +996,28 @@ const next = data.milestones
   }
 
   function onSubmit(event) {
-    if (!event.target.matches("[data-alert-form]")) return;
+    const form = event.target;
+    if (form.matches("[data-pace-form]")) {
+      event.preventDefault();
+      applyPace(event.submitter && event.submitter.dataset.calc === "finish" ? "finish" : "pace");
+      return;
+    }
+    if (form.matches("[data-chart-form]")) {
+      event.preventDefault();
+      applyChart();
+      return;
+    }
+    if (form.matches("[data-hr-form]")) {
+      event.preventDefault();
+      applyHeart();
+      return;
+    }
+    if (form.matches("[data-gel-form]")) {
+      event.preventDefault();
+      applyGel();
+      return;
+    }
+    if (!form.matches("[data-alert-form]")) return;
     event.preventDefault();
     state.alerts = readAlertForm();
     state.alertSaved = true;

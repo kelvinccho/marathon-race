@@ -585,8 +585,82 @@
     return errors;
   }
 
+  const DISTANCES = { "5k": 5, "10k": 10, half: 21.0975, marathon: 42.195 };
+  const MILE_KM = 1.609344;
+
+  function distanceKm(id, customKm) {
+    if (id === "custom") {
+      const km = Number(customKm);
+      return km > 0 && Number.isFinite(km) ? km : null;
+    }
+    return DISTANCES[id] || null;
+  }
+
+  function pacePlan(km, totalSeconds) {
+    if (!(km > 0) || !(totalSeconds > 0) || !Number.isFinite(km) || !Number.isFinite(totalSeconds)) return null;
+    const secPerKm = totalSeconds / km;
+    return { distanceKm: km, totalSeconds, secPerKm, secPerMile: secPerKm * MILE_KM };
+  }
+
+  function paceChart(km, totalSeconds, unit) {
+    const plan = pacePlan(km, totalSeconds);
+    if (!plan) return null;
+    const step = unit === "mi" ? MILE_KM : 1;
+    const rows = [];
+    for (let distance = step; distance < km - 1e-6 && rows.length < 500; distance += step) {
+      rows.push({ distanceKm: distance, seconds: plan.secPerKm * distance });
+    }
+    rows.push({ distanceKm: km, seconds: totalSeconds, finish: true });
+    return Object.assign({ unit: unit === "mi" ? "mi" : "km", rows }, plan);
+  }
+
+  function heartZones(age) {
+    const years = Number(age);
+    if (!Number.isInteger(years) || years < 10 || years > 100) return null;
+    const max = 220 - years;
+    const bands = [[1, 0.5, 0.6], [2, 0.6, 0.7], [3, 0.7, 0.8], [4, 0.8, 0.9], [5, 0.9, 1]];
+    return {
+      age: years,
+      max,
+      zones: bands.map(([zone, low, high]) => ({
+        zone,
+        low: Math.round(max * low),
+        high: Math.round(max * high),
+      })),
+    };
+  }
+
+  function gelPlan(input) {
+    const minutes = Number(input.minutes);
+    const gramsPerHour = Number(input.gramsPerHour);
+    const gramsPerGel = Number(input.gramsPerGel);
+    const drinkPerHour = Number(input.drinkPerHour || 0);
+    if (!(minutes > 0) || !(gramsPerHour > 0) || !(gramsPerGel > 0) || !(drinkPerHour >= 0)) return null;
+    if (![minutes, gramsPerHour, gramsPerGel, drinkPerHour].every(Number.isFinite)) return null;
+    const hours = minutes / 60;
+    const totalCarbs = gramsPerHour * hours;
+    const drinkCarbs = drinkPerHour * hours;
+    const gelCarbs = Math.max(0, totalCarbs - drinkCarbs);
+    const gels = gelCarbs === 0 ? 0 : Math.ceil(gelCarbs / gramsPerGel - 1e-9);
+    return {
+      minutes,
+      totalCarbs,
+      drinkCarbs,
+      gelCarbs,
+      gramsPerGel,
+      gels,
+      intervalMinutes: gels > 0 ? minutes / gels : null,
+    };
+  }
+
   return {
     MILESTONE_TYPES,
+    DISTANCES,
+    distanceKm,
+    pacePlan,
+    paceChart,
+    heartZones,
+    gelPlan,
     setLocale,
     swatchFor,
     ymdInZone,

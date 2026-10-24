@@ -75,3 +75,5 @@ npm test
 ## Pages
 
 Home is a month calendar and a `DD:HH:MM:SS` countdown to the next instant. Events, Plan your race, About, and Get Alerts are linked from the header. Plan choices stay in the browser. Email alerts are not sent yet.
+
+Tool adds a pace calculator, a pace chart, heart-rate zones from age, and a gel and carbohydrate estimate. Race Plan describes the PaceBest app. The install button appears only after a public TestFlight join URL is pasted into `TESTFLIGHT_URL` at the top of `assets/js/site.js`.

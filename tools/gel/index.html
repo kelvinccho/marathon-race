@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-root="../.." data-page="gel">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gel and carbs calculator — Marathon Race</title>
+  <meta name="description" content="Estimate how many gels cover a carbohydrate target after counting the drink.">
+  <link rel="canonical" href="https://kelvinccho.github.io/marathon-race/tools/gel/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/json" title="Events JSON" href="../../data/events.json">
+  <link rel="alternate" type="application/json" title="Milestones JSON" href="../../data/milestones.json">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <meta property="og:title" content="Gel and carbs calculator — Marathon Race">
+  <meta property="og:description" content="Estimate how many gels cover a carbohydrate target after counting the drink.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kelvinccho.github.io/marathon-race/tools/gel/">
+  
+</head>
+<body>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Gel and carbs</h1><p>Common planning ranges are 30–90 g of carbohydrate per hour. Many gels are 20–25 g. This is not a nutrition prescription.</p></article><article lang="zh-Hant"><h1>能量膠與碳水</h1><p>常見的規劃範圍是每小時 30–90 克碳水。能量膠多半是 20–25 克。這不是營養處方。</p></article></noscript>
+  <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/site.js"></script>
+</body>
+</html>

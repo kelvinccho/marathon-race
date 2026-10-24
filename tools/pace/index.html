@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-root="../.." data-page="pace">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pace calculator — Marathon Race</title>
+  <meta name="description" content="Turn a finish time into pace per kilometre and per mile, or the other way around.">
+  <link rel="canonical" href="https://kelvinccho.github.io/marathon-race/tools/pace/">
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="alternate" type="application/json" title="Events JSON" href="../../data/events.json">
+  <link rel="alternate" type="application/json" title="Milestones JSON" href="../../data/milestones.json">
+  <link rel="stylesheet" href="../../assets/css/site.css">
+  <meta property="og:title" content="Pace calculator — Marathon Race">
+  <meta property="og:description" content="Turn a finish time into pace per kilometre and per mile, or the other way around.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kelvinccho.github.io/marathon-race/tools/pace/">
+  
+</head>
+<body>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Pace calculator</h1><p>Enter a finish time.</p></article><article lang="zh-Hant"><h1>配速計算</h1><p>請輸入完賽時間。</p></article></noscript>
+  <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
+  <script src="../../assets/js/site.js"></script>
+</body>
+</html>

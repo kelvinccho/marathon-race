@@ -103,6 +103,17 @@ const ics = logic.buildIcs(data);
 assert(ics.includes("BEGIN:VCALENDAR") && ics.includes("chicago-2027-ballot-close@marathon-race"), "calendar feed missing Chicago close");
 assert(ics.includes("DTSTART:20261029T190000Z"), "Chicago close should be 19:00 UTC on 29 Oct 2026");
 
+const marathonPace = logic.pacePlan(42.195, 3 * 3600);
+assert(Math.round(marathonPace.secPerKm) === 256 && Math.round(marathonPace.secPerMile) === 412, "a 3:00 marathon is 4:16 per km");
+const marathonChart = logic.paceChart(42.195, 3 * 3600, "km");
+assert(marathonChart.rows.length === 43 && Math.round(marathonChart.rows[0].seconds) === 256 && marathonChart.rows.at(-1).seconds === 10800, "marathon pace chart");
+const zones = logic.heartZones(40);
+assert(zones.max === 180 && zones.zones[1].zone === 2 && zones.zones[1].low === 108 && zones.zones[1].high === 126, "age 40 heart-rate zones");
+assert(logic.heartZones(9) == null && logic.heartZones(40.5) == null, "heart-rate age must be a whole number from 10 to 100");
+const gels = logic.gelPlan({ minutes: 180, gramsPerHour: 60, gramsPerGel: 20, drinkPerHour: 0 });
+assert(gels.gels === 9 && gels.totalCarbs === 180 && gels.intervalMinutes === 20, "three hours at 60 g per hour is nine 20 g gels");
+assert(logic.gelPlan({ minutes: 60, gramsPerHour: 60, gramsPerGel: 22, drinkPerHour: 70 }).gels === 0, "drink carbs can cover the gel target");
+
 const coverage = i18n.coverageErrors(data);
 assert(coverage.length === 0, coverage.join("; "));
 const english = i18n.localize(data, "en");

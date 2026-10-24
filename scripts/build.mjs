@@ -24,6 +24,11 @@ const pages = [
   { path: "plan/index.html", depth: 1, page: "plan", title: "Plan your race — Marathon Race", description: "Pick the majors you are chasing and see every remaining deadline, plus the Monday a 16-week block starts." },
   { path: "about/index.html", depth: 1, page: "about", title: "About — Marathon Race", description: "An independent majors calendar, published as JSON so you can use the dates in your own app." },
   { path: "alerts/index.html", depth: 1, page: "alerts", title: "Get alerts — Marathon Race", description: "Subscribe to the calendar, or read the JSON feed from your own app." },
+  { path: "tools/race-plan/index.html", depth: 2, page: "race-plan", title: "Race Plan — Marathon Race", description: "PaceBest plans a marathon you can follow on the day: pace, heart rate, and gel reminders." },
+  { path: "tools/pace/index.html", depth: 2, page: "pace", title: "Pace calculator — Marathon Race", description: "Turn a finish time into pace per kilometre and per mile, or the other way around." },
+  { path: "tools/heart-rate/index.html", depth: 2, page: "heart-rate", title: "Heart rate zones — Marathon Race", description: "Estimate heart-rate zones from age with the 220 minus age formula." },
+  { path: "tools/pace-chart/index.html", depth: 2, page: "pace-chart", title: "Pace chart — Marathon Race", description: "An even-pace split table for a 5K, 10K, half, or marathon." },
+  { path: "tools/gel/index.html", depth: 2, page: "gel", title: "Gel and carbs calculator — Marathon Race", description: "Estimate how many gels cover a carbohydrate target after counting the drink." },
 ];
 
 data.events.forEach((event) => {
@@ -109,6 +114,17 @@ function writePage(page) {
 }
 
 function noscript(page, prefix) {
+  const toolCopy = {
+    "race-plan": ["Race Plan", "PaceBest plans a race you can follow on the day."],
+    pace: ["Pace calculator", "Enter a finish time."],
+    "heart-rate": ["Heart rate zones", "220 minus age is a rough estimate, not a test."],
+    "pace-chart": ["Pace chart", "Even pace. The last row is the exact distance."],
+    gel: ["Gel and carbs", "Common planning ranges are 30–90 g of carbohydrate per hour. Many gels are 20–25 g. This is not a nutrition prescription."],
+  }[page.page];
+  if (toolCopy) {
+    const [title, body] = toolCopy;
+    return `<noscript><article lang="en"><h1>${escapeHtml(title)}</h1><p>${escapeHtml(body)}</p></article><article lang="zh-Hant"><h1>${escapeHtml(i18n.text("zh-Hant", title))}</h1><p>${escapeHtml(i18n.text("zh-Hant", body))}</p></article></noscript>`;
+  }
   if (page.page === "event") {
     const event = data.events.find((item) => item.id === page.eventId);
     const rows = event.milestones.map((milestone) => {
