@@ -86,7 +86,44 @@ button, input { font: inherit; color: inherit; }
     radial-gradient(circle at 35px 8px, #1c1916 3.5px, transparent 4px);
 }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
-.lang-switch { display: inline-flex; gap: 4px; margin-left: 4px; }
+.nav-main { display: contents; }
+.nav-main > a { order: 1; }
+.nav-alert { order: 2; }
+.lang-switch { order: 3; display: inline-flex; gap: 4px; margin-left: 4px; }
+.menu-button {
+  display: none;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  background: transparent;
+  border-radius: 999px;
+  color: inherit;
+  cursor: pointer;
+}
+.menu-icon {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+}
+.menu-icon::before,
+.menu-icon::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+}
+.menu-icon::before { top: -5px; }
+.menu-icon::after { top: 5px; }
+.header-row.is-open .menu-icon { background: transparent; }
+.header-row.is-open .menu-icon::before { top: 0; transform: rotate(45deg); }
+.header-row.is-open .menu-icon::after { top: 0; transform: rotate(-45deg); }
 .lang-button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 html[lang="zh-Hant"] body,
 html[lang="zh-Hant"] button,
@@ -583,6 +620,26 @@ input[type="email"] {
 @media (max-width: 640px) {
   .race-row { grid-template-columns: 1fr; gap: 4px; }
   .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .header-row { justify-content: flex-start; gap: 8px; }
+  .brand { margin-right: auto; font-size: 1.15rem; }
+  .menu-button { display: inline-grid; order: 3; }
+  .nav { display: contents; }
+  .nav-alert { order: 2; margin-left: 0; }
+  .nav-main {
+    display: none;
+    order: 4;
+    flex: 1 0 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    padding: 8px 0 12px;
+    border-top: 1px solid var(--line);
+  }
+  .header-row.is-open .nav-main { display: flex; }
+  .nav-main > a { order: 0; min-height: 44px; display: flex; align-items: center; }
+  .lang-switch { order: 0; margin: 8px 0 0; }
 }
 @media print {
   .site-header, .countdown-actions, .filters, .filter-groups, .site-footer { display: none; }
