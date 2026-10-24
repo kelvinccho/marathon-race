@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found — Marathon Race</title>
+  <script>
+    var path = location.pathname;
+    var marker = "/marathon-race/";
+    var at = path.indexOf(marker);
+    window.MR_BASE = at >= 0 ? path.slice(0, at + marker.length - 1) : "";
+  </script>
+  <link rel="stylesheet" href="" id="css">
+  <script>document.getElementById("css").href = window.MR_BASE + "/assets/css/site.css";</script>
+</head>
+<body>
+  <main class="wrap page-miss">
+    <p class="eyebrow">404</p>
+    <h1>That page is not on the calendar.</h1>
+    <p><a id="home" href="/">Back to the calendar</a></p>
+  </main>
+  <script>document.getElementById("home").href = window.MR_BASE + "/";</script>
+</body>
+</html>

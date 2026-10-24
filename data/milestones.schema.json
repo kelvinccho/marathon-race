@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kelvinccho.github.io/marathon-race/data/milestones.schema.json",
+  "title": "Marathon Race milestones",
+  "description": "Flat view of data/events.json, one row per milestone, sorted by the instant in `at`. Generated. Do not edit by hand.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "derivedFrom", "checked", "publisher", "disclaimer", "milestoneTypes", "milestones"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "derivedFrom": { "const": "events.json" },
+    "checked": { "type": "string" },
+    "publisher": { "type": "string" },
+    "disclaimer": { "type": "string" },
+    "milestoneTypes": { "type": "array" },
+    "milestones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "eventId", "eventName", "shortName", "edition", "series", "seriesStatus", "order",
+          "entryState", "entryNoun", "hasPublicBallot", "city", "region", "country", "countryCode",
+          "timeZone", "raceDate", "raceEndDate", "officialUrl", "entryUrl", "path",
+          "milestoneId", "type", "label", "at", "end", "endLabel", "date", "endDate",
+          "precision", "confidence", "primary", "note", "sourceUrl"
+        ],
+        "properties": {
+          "eventId": { "type": "string" },
+          "eventName": { "type": "string" },
+          "shortName": { "type": "string" },
+          "edition": { "type": "integer" },
+          "series": { "type": "string" },
+          "seriesStatus": { "type": "string" },
+          "order": { "type": "integer" },
+          "entryState": { "type": "string" },
+          "entryNoun": { "type": "string" },
+          "hasPublicBallot": { "type": "boolean" },
+          "city": { "type": "string" },
+          "region": { "type": "string" },
+          "country": { "type": "string" },
+          "countryCode": { "type": "string" },
+          "timeZone": { "type": "string" },
+          "raceDate": { "type": "string" },
+          "raceEndDate": { "type": ["string", "null"] },
+          "officialUrl": { "type": "string" },
+          "entryUrl": { "type": "string" },
+          "path": { "type": "string" },
+          "milestoneId": { "type": "string" },
+          "type": { "type": "string" },
+          "label": { "type": "string" },
+          "at": { "type": ["string", "null"] },
+          "end": { "type": ["string", "null"] },
+          "endLabel": { "type": ["string", "null"] },
+          "date": { "type": ["string", "null"] },
+          "endDate": { "type": ["string", "null"] },
+          "precision": { "type": "string" },
+          "confidence": { "type": "string" },
+          "primary": { "type": "boolean" },
+          "note": { "type": "string" },
+          "sourceUrl": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

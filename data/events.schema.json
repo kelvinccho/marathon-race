@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kelvinccho.github.io/marathon-race/data/events.schema.json",
+  "title": "Marathon Race events",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "checked", "publisher", "disclaimer", "milestoneTypes", "events"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "schemaVersion": { "const": 1 },
+    "checked": { "type": "string", "format": "date" },
+    "publisher": { "type": "string" },
+    "disclaimer": { "type": "string" },
+    "milestoneTypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "color"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "color": { "type": "string" }
+        }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "confidence": { "enum": ["official", "reported", "expected"] },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "name", "shortName", "edition", "series", "seriesStatus", "order",
+        "city", "region", "country", "countryCode", "timeZone", "raceDate", "raceEndDate",
+        "entryNoun", "entryState", "hasPublicBallot", "officialUrl", "entryUrl",
+        "fee", "odds", "fieldNote", "summary", "watchOut", "checked", "sources", "milestones"
+      ],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "shortName": { "type": "string" },
+        "edition": { "type": "integer" },
+        "series": { "const": "world_marathon_majors" },
+        "seriesStatus": { "enum": ["major", "candidate"] },
+        "order": { "type": "integer" },
+        "city": { "type": "string" },
+        "region": { "type": "string" },
+        "country": { "type": "string" },
+        "countryCode": { "type": "string", "minLength": 2, "maxLength": 2 },
+        "timeZone": { "type": "string" },
+        "raceDate": { "type": "string" },
+        "raceEndDate": { "type": ["string", "null"] },
+        "entryNoun": { "type": "string" },
+        "entryState": { "enum": ["open", "awaiting_result", "decided", "upcoming"] },
+        "hasPublicBallot": { "type": "boolean" },
+        "officialUrl": { "type": "string" },
+        "entryUrl": { "type": "string" },
+        "fee": { "$ref": "#/$defs/note" },
+        "odds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["summary", "acceptanceRate", "confidence"],
+          "properties": {
+            "summary": { "type": "string" },
+            "acceptanceRate": { "type": ["number", "null"] },
+            "confidence": { "$ref": "#/$defs/confidence" }
+          }
+        },
+        "fieldNote": { "type": ["string", "null"] },
+        "summary": { "type": "string" },
+        "watchOut": { "type": "string" },
+        "checked": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label", "url"],
+            "properties": {
+              "label": { "type": "string" },
+              "url": { "type": "string" }
+            }
+          }
+        },
+        "milestones": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/milestone" }
+        }
+      }
+    },
+    "note": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "confidence"],
+      "properties": {
+        "summary": { "type": "string" },
+        "confidence": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "milestone": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "label", "at", "end", "endLabel", "date", "endDate", "precision", "confidence", "primary", "note", "sourceUrl"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "enum": ["ballot_open", "ballot_close", "result", "payment", "expo", "race", "qualifier_open", "qualifier_close"]
+        },
+        "label": { "type": "string" },
+        "at": { "type": ["string", "null"], "description": "ISO-8601 instant with a numeric offset. Null when the date is not published. Sort and count down with this, not with the string order of mixed offsets." },
+        "end": { "type": ["string", "null"], "description": "Inclusive end instant when this single milestone spans a range, such as an expo or a race weekend. Ballot close is a separate milestone, not the end of ballot open." },
+        "endLabel": { "type": ["string", "null"] },
+        "date": { "type": ["string", "null"], "description": "Civil date of at in the event timeZone. YYYY-MM-DD. Use this for all-day calendar cells." },
+        "endDate": { "type": ["string", "null"] },
+        "precision": { "enum": ["instant", "day", "tbc"], "description": "instant: at is a real clock time. day: at is only the start of date; do not show a clock time. tbc: at, end, date, and endDate are null." },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "primary": { "type": "boolean", "description": "False for an extra window, such as London Good for Age beside the ballot, or Chicago's second payment deadline." },
+        "note": { "type": "string" },
+        "sourceUrl": { "type": ["string", "null"] }
+      }
+    }
+  }
+}
