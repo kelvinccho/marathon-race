@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"Boston Marathon 2027","startDate":"2027-04-19","endDate":"2027-04-19","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Boston","address":{"@type":"PostalAddress","addressLocality":"Boston","addressCountry":"US"}},"url":"https://www.baa.org/races/boston-marathon","description":"Boston has no public lottery. Qualified runners registered from 14 to 18 September 2026, closing at 17:00 Eastern. Acceptances started on 29 September and the fee is charged on acceptance. Charity is the route in without a qualifier."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>Boston Marathon 2027</h1><p>Boston has no public lottery. Qualified runners registered from 14 to 18 September 2026, closing at 17:00 Eastern. Acceptances started on 29 September and the fee is charged on acceptance. Charity is the route in without a qualifier.</p><ul><li><strong>Registration opens</strong> — 2026-09-14</li><li><strong>Registration closes</strong> — 2026-09-18</li><li><strong>Acceptances</strong> — 2026-09-29</li><li><strong>Payment</strong> — 2026-09-29</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-04-19</li></ul><p><a href="https://www.baa.org/races/boston-marathon">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Boston Marathon 2027</h1><p>Boston has no public lottery. Qualified runners registered from 14 to 18 September 2026, closing at 17:00 Eastern. Acceptances started on 29 September and the fee is charged on acceptance. Charity is the route in without a qualifier.</p><ul><li><strong>Registration opens</strong> — 2026-09-14</li><li><strong>Registration closes</strong> — 2026-09-18</li><li><strong>Acceptances</strong> — 2026-09-29</li><li><strong>Payment</strong> — 2026-09-29</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-04-19</li></ul><p><a href="https://www.baa.org/races/boston-marathon">Official site</a></p></article><article lang="zh-Hant"><h1>Boston Marathon 2027</h1><p>Boston Marathon 沒有公開抽籤。達標跑者於 2026 年 9 月 14 日至 18 日報名，美東時間 17:00 截止。錄取通知自 9 月 29 日開始，錄取時扣款。沒有達標成績時，慈善名額是另一條路。</p><ul><li><strong>達標報名開始</strong> — 2026-09-14</li><li><strong>達標報名截止</strong> — 2026-09-18</li><li><strong>錄取通知</strong> — 2026-09-29</li><li><strong>繳費</strong> — 2026-09-29</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽日</strong> — 2027-04-19</li></ul><p><a href="https://www.baa.org/races/boston-marathon">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

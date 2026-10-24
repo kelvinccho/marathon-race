@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"Shanghai Marathon 2026","startDate":"2026-12-06","endDate":"2026-12-06","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Shanghai","address":{"@type":"PostalAddress","addressLocality":"Shanghai","addressCountry":"CN"}},"url":"https://www.shang-ma.com/","description":"Shanghai is a candidate for a ninth World Marathon Major, not a member yet. The evaluation race is Sunday 6 December 2026. The 2026 entry window has closed and the selected field was announced on 30 June 2026. This file does not invent the open and close timestamps."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>Shanghai Marathon 2026</h1><p>Shanghai is a candidate for a ninth World Marathon Major, not a member yet. The evaluation race is Sunday 6 December 2026. The 2026 entry window has closed and the selected field was announced on 30 June 2026. This file does not invent the open and close timestamps.</p><ul><li><strong>Entry opens</strong> — Not announced</li><li><strong>Entry closes</strong> — Not announced</li><li><strong>Selected field</strong> — 2026-06-30</li><li><strong>Payment</strong> — Not announced</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2026-12-06</li></ul><p><a href="https://www.shang-ma.com/">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Shanghai Marathon 2026</h1><p>Shanghai is a candidate for a ninth World Marathon Major, not a member yet. The evaluation race is Sunday 6 December 2026. The 2026 entry window has closed and the selected field was announced on 30 June 2026. This file does not invent the open and close timestamps.</p><ul><li><strong>Entry opens</strong> — Not announced</li><li><strong>Entry closes</strong> — Not announced</li><li><strong>Selected field</strong> — 2026-06-30</li><li><strong>Payment</strong> — Not announced</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2026-12-06</li></ul><p><a href="https://www.shang-ma.com/">Official site</a></p></article><article lang="zh-Hant"><h1>Shanghai Marathon 2026</h1><p>Shanghai Marathon 是第九場世界馬拉松大滿貫的候選，尚未成為成員。評估賽是 2026 年 12 月 6 日週日。2026 年報名時段已截止，入選名單於 2026 年 6 月 30 日公布。這份檔案沒有編造開始與截止的時刻。</p><ul><li><strong>報名開始</strong> — 尚未公布</li><li><strong>報名截止</strong> — 尚未公布</li><li><strong>入選名單</strong> — 2026-06-30</li><li><strong>繳費</strong> — 尚未公布</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽日</strong> — 2026-12-06</li></ul><p><a href="https://www.shang-ma.com/">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

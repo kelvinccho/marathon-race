@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const logic = require("../assets/js/logic.js");
+const i18n = require("../assets/js/i18n.js");
 const root = join(import.meta.dirname, "..");
 const SITE = "https://kelvinccho.github.io/marathon-race";
 const data = JSON.parse(readFileSync(join(root, "data/events.json"), "utf8"));
@@ -85,9 +86,19 @@ function writePage(page) {
   ${page.jsonLd ? `<script type="application/ld+json">${JSON.stringify(page.jsonLd)}</script>` : ""}
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = ${JSON.stringify(i18n.text("zh-Hant", "Loading the calendar…"))};
+      }
+    } catch (error) {}
+  </script>
   ${noscript(page, prefix)}
   <script src="${prefix}assets/js/logic.js"></script>
+  <script src="${prefix}assets/js/i18n.js"></script>
   <script src="${prefix}assets/js/site.js"></script>
 </body>
 </html>
@@ -104,10 +115,15 @@ function noscript(page, prefix) {
       const when = milestone.date ? `${milestone.date}${milestone.endDate && milestone.endDate !== milestone.date ? ` to ${milestone.endDate}` : ""}` : "Not announced";
       return `<li><strong>${escapeHtml(milestone.label)}</strong> — ${escapeHtml(when)}</li>`;
     }).join("");
-    return `<noscript><article><h1>${escapeHtml(event.name)} ${event.edition}</h1><p>${escapeHtml(event.summary)}</p><ul>${rows}</ul><p><a href="${event.officialUrl}">Official site</a></p></article></noscript>`;
+    const zhEvent = i18n.localize(data, "zh-Hant").events.find((item) => item.id === event.id);
+    const zhRows = zhEvent.milestones.map((milestone) => {
+      const when = milestone.date ? `${milestone.date}${milestone.endDate && milestone.endDate !== milestone.date ? ` 至 ${milestone.endDate}` : ""}` : i18n.text("zh-Hant", "Not announced");
+      return `<li><strong>${escapeHtml(milestone.label)}</strong> — ${escapeHtml(when)}</li>`;
+    }).join("");
+    return `<noscript><article lang="en"><h1>${escapeHtml(event.name)} ${event.edition}</h1><p>${escapeHtml(event.summary)}</p><ul>${rows}</ul><p><a href="${event.officialUrl}">Official site</a></p></article><article lang="zh-Hant"><h1>${escapeHtml(event.name)} ${event.edition}</h1><p>${escapeHtml(zhEvent.summary)}</p><ul>${zhRows}</ul><p><a href="${event.officialUrl}">${escapeHtml(i18n.text("zh-Hant", "Official site"))}</a></p></article></noscript>`;
   }
   const items = data.events.map((event) => `<li><a href="${prefix}events/${event.id}/">${escapeHtml(event.shortName)} ${event.edition}</a> — ${event.raceDate}</li>`).join("");
-  return `<noscript><p>The live countdown needs JavaScript. The same dates are in <a href="${prefix}data/events.json">events.json</a> and <a href="${prefix}data/milestones.json">milestones.json</a>.</p><ul>${items}</ul></noscript>`;
+  return `<noscript><p lang="en">The live countdown needs JavaScript. The same dates are in <a href="${prefix}data/events.json">events.json</a> and <a href="${prefix}data/milestones.json">milestones.json</a>.</p><p lang="zh-Hant">${escapeHtml(i18n.text("zh-Hant", "The live countdown needs JavaScript. The same dates are in"))} <a href="${prefix}data/events.json">events.json</a> ${escapeHtml(i18n.text("zh-Hant", "and"))} <a href="${prefix}data/milestones.json">milestones.json</a>。</p><ul>${items}</ul></noscript>`;
 }
 
 function sitemap(list) {
@@ -137,10 +153,19 @@ function notFound() {
 <body>
   <main class="wrap page-miss">
     <p class="eyebrow">404</p>
-    <h1>That page is not on the calendar.</h1>
+    <h1 id="miss">That page is not on the calendar.</h1>
     <p><a id="home" href="/">Back to the calendar</a></p>
   </main>
-  <script>document.getElementById("home").href = window.MR_BASE + "/";</script>
+  <script>
+    document.getElementById("home").href = window.MR_BASE + "/";
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        document.getElementById("miss").textContent = "行事曆上沒有這一頁。";
+        document.getElementById("home").textContent = "回到行事曆";
+      }
+    } catch (error) {}
+  </script>
 </body>
 </html>
 `;

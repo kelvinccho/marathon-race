@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"TCS London Marathon 2027","startDate":"2027-04-24","endDate":"2027-04-25","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"London","address":{"@type":"PostalAddress","addressLocality":"London","addressCountry":"GB"}},"url":"https://www.tcslondonmarathon.com/","description":"The ballot ran from 09:00 on 24 April to 16:00 on 1 May 2026. Results were emailed on 9 July 2026. Winners had to confirm by 16:00 on 31 July. Good for Age entry for UK residents closes at 16:00 UK time on 29 October 2026. Charity places are separate."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>TCS London Marathon 2027</h1><p>The ballot ran from 09:00 on 24 April to 16:00 on 1 May 2026. Results were emailed on 9 July 2026. Winners had to confirm by 16:00 on 31 July. Good for Age entry for UK residents closes at 16:00 UK time on 29 October 2026. Charity places are separate.</p><ul><li><strong>Ballot opens</strong> — 2026-04-24</li><li><strong>Ballot closes</strong> — 2026-05-01</li><li><strong>Ballot results</strong> — 2026-07-09</li><li><strong>Confirm entry</strong> — 2026-07-31</li><li><strong>Good for Age opens</strong> — 2026-10-01</li><li><strong>Good for Age closes</strong> — 2026-10-29</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race weekend</strong> — 2027-04-24 to 2027-04-25</li></ul><p><a href="https://www.tcslondonmarathon.com/">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>TCS London Marathon 2027</h1><p>The ballot ran from 09:00 on 24 April to 16:00 on 1 May 2026. Results were emailed on 9 July 2026. Winners had to confirm by 16:00 on 31 July. Good for Age entry for UK residents closes at 16:00 UK time on 29 October 2026. Charity places are separate.</p><ul><li><strong>Ballot opens</strong> — 2026-04-24</li><li><strong>Ballot closes</strong> — 2026-05-01</li><li><strong>Ballot results</strong> — 2026-07-09</li><li><strong>Confirm entry</strong> — 2026-07-31</li><li><strong>Good for Age opens</strong> — 2026-10-01</li><li><strong>Good for Age closes</strong> — 2026-10-29</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race weekend</strong> — 2027-04-24 to 2027-04-25</li></ul><p><a href="https://www.tcslondonmarathon.com/">Official site</a></p></article><article lang="zh-Hant"><h1>TCS London Marathon 2027</h1><p>抽籤自 2026 年 4 月 24 日 09:00 至 5 月 1 日 16:00。結果於 2026 年 7 月 9 日以電子郵件寄出。中籤者須在 7 月 31 日 16:00 前確認。英國居民的年齡達標（Good for Age）於英國時間 2026 年 10 月 29 日 16:00 截止。慈善名額另計。</p><ul><li><strong>抽籤開始</strong> — 2026-04-24</li><li><strong>抽籤截止</strong> — 2026-05-01</li><li><strong>抽籤結果</strong> — 2026-07-09</li><li><strong>確認報名</strong> — 2026-07-31</li><li><strong>年齡達標開始</strong> — 2026-10-01</li><li><strong>年齡達標截止</strong> — 2026-10-29</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽週末</strong> — 2027-04-24 至 2027-04-25</li></ul><p><a href="https://www.tcslondonmarathon.com/">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

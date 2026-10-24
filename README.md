@@ -62,6 +62,16 @@ python3 -m http.server 4173
 
 Open http://127.0.0.1:4173/
 
+## Tests
+
+The language switch is exercised in Chromium with Playwright. The page clock is pinned to 24 October 2026, so the calendar does not depend on the day the test runs.
+
+```bash
+npm install
+npx playwright install chromium
+npm test
+```
+
 ## Pages
 
 Home is a month calendar and a `DD:HH:MM:SS` countdown to the next instant. Events, Plan your race, About, and Get Alerts are linked from the header. Plan choices stay in the browser. Email alerts are not sent yet.

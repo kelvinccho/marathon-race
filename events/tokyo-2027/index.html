@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"Tokyo Marathon 2027","startDate":"2027-03-07","endDate":"2027-03-07","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Tokyo","address":{"@type":"PostalAddress","addressLocality":"Tokyo","addressCountry":"JP"}},"url":"https://www.marathon.tokyo/en/","description":"The general lottery ran from 11:00 on 14 August to 17:00 on 28 August 2026, Japan time. Results went out on 18 September, with payment due by 30 September. There is no second general draw for 2027."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>Tokyo Marathon 2027</h1><p>The general lottery ran from 11:00 on 14 August to 17:00 on 28 August 2026, Japan time. Results went out on 18 September, with payment due by 30 September. There is no second general draw for 2027.</p><ul><li><strong>Lottery opens</strong> — 2026-08-14</li><li><strong>Lottery closes</strong> — 2026-08-28</li><li><strong>Lottery results</strong> — 2026-09-18</li><li><strong>Payment due</strong> — 2026-09-30</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-03-07</li></ul><p><a href="https://www.marathon.tokyo/en/">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Tokyo Marathon 2027</h1><p>The general lottery ran from 11:00 on 14 August to 17:00 on 28 August 2026, Japan time. Results went out on 18 September, with payment due by 30 September. There is no second general draw for 2027.</p><ul><li><strong>Lottery opens</strong> — 2026-08-14</li><li><strong>Lottery closes</strong> — 2026-08-28</li><li><strong>Lottery results</strong> — 2026-09-18</li><li><strong>Payment due</strong> — 2026-09-30</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-03-07</li></ul><p><a href="https://www.marathon.tokyo/en/">Official site</a></p></article><article lang="zh-Hant"><h1>Tokyo Marathon 2027</h1><p>一般抽籤於日本時間 2026 年 8 月 14 日 11:00 至 8 月 28 日 17:00。結果在 9 月 18 日寄出，繳費截止為 9 月 30 日。2027 年沒有第二次一般抽籤。</p><ul><li><strong>抽籤開始</strong> — 2026-08-14</li><li><strong>抽籤截止</strong> — 2026-08-28</li><li><strong>抽籤結果</strong> — 2026-09-18</li><li><strong>繳費截止</strong> — 2026-09-30</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽日</strong> — 2027-03-07</li></ul><p><a href="https://www.marathon.tokyo/en/">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>
