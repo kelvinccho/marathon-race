@@ -23,7 +23,7 @@ html { scroll-behavior: smooth; }
 body {
   margin: 0;
   background:
-    linear-gradient(#0f6f6a, #8a5300, #5c4d8a, #9d3d55, #1e4f86, #a33b24) top / 100% 6px no-repeat,
+    linear-gradient(#e7e1d6, #b7aea0, #6f675e, #1c1916) top / 100% 6px no-repeat,
     var(--paper);
   color: var(--ink);
   font-family: Outfit, "Segoe UI", sans-serif;
@@ -80,10 +80,10 @@ button, input { font: inherit; color: inherit; }
   width: 42px;
   height: 16px;
   background:
-    radial-gradient(circle at 5px 8px, var(--ballot) 3.5px, transparent 4px),
-    radial-gradient(circle at 15px 8px, var(--close) 3.5px, transparent 4px),
-    radial-gradient(circle at 25px 8px, var(--result) 3.5px, transparent 4px),
-    radial-gradient(circle at 35px 8px, var(--race) 3.5px, transparent 4px);
+    radial-gradient(circle at 5px 8px, #e7e1d6 3.5px, transparent 4px),
+    radial-gradient(circle at 15px 8px, transparent 2.2px, #1c1916 2.4px, #1c1916 4.2px, transparent 4.4px),
+    radial-gradient(circle at 25px 8px, #6f675e 3.5px, transparent 4px),
+    radial-gradient(circle at 35px 8px, #1c1916 3.5px, transparent 4px);
 }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
 .nav a {
@@ -186,6 +186,7 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
 .day.is-selected { box-shadow: inset 0 0 0 1.5px var(--ink); }
 .lanes { gap: 3px 4px; margin-top: 4px; }
 .bar {
+  --mark: var(--race-color, #e7e1d6);
   grid-column-start: var(--col);
   grid-column-end: span var(--span);
   grid-row-start: var(--lane);
@@ -195,7 +196,8 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
   height: 20px;
   padding: 0 7px;
   border-radius: 5px;
-  color: white;
+  background: var(--mark);
+  color: var(--ink);
   font-size: 11px;
   font-weight: 600;
   line-height: 20px;
@@ -203,6 +205,41 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.bar.importance-payment {
+  background: color-mix(in srgb, var(--mark) 58%, var(--ink));
+  color: var(--paper);
+}
+.bar.importance-expo {
+  background: color-mix(in srgb, var(--mark) 34%, var(--ink));
+  color: var(--paper);
+}
+.bar.importance-race {
+  background: color-mix(in srgb, var(--mark) 10%, var(--ink));
+  color: var(--paper);
+}
+.bar.importance-result {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--mark) 18%, var(--ink));
+}
+.bar.importance-result.kind-chip {
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  padding: 0;
+  border-radius: 50%;
+  justify-self: center;
+}
+.bar.importance-result.kind-chip .bar-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 .bar.continues::before { border-radius: 0; }
 .bar.continues-before { border-top-left-radius: 0; border-bottom-left-radius: 0; }
@@ -214,9 +251,8 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
   right: 0;
   bottom: 0;
   width: 7px;
-  background: rgba(0, 0, 0, 0.28);
+  background: color-mix(in srgb, var(--mark) 35%, var(--ink));
 }
-.bar[data-swatch="ballot"].ends-here::after { background: var(--close); }
 .bar.is-next { outline: 2px solid var(--ink); outline-offset: 1px; }
 .swatch-ballot { background: var(--ballot); }
 .swatch-close { background: var(--close); }
@@ -228,18 +264,44 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
 
 .legend { display: flex; flex-wrap: wrap; gap: 8px 12px; margin: 12px 0 0; padding: 0; list-style: none; color: var(--muted); font-size: 0.82rem; }
 .legend li { display: flex; align-items: center; gap: 6px; }
-.legend i, .dot {
+.legend i, .dot, .mark-dot, .pill, .event-card, .race-row, .stage {
+  --mark: var(--race-color, #e7e1d6);
+}
+.legend i, .dot, .mark-dot {
   width: 10px;
   height: 10px;
   border-radius: 99px;
   display: inline-block;
+  background: var(--mark);
+  flex: none;
+}
+.importance-payment.dot, .importance-payment.mark-dot, .legend i.importance-payment {
+  background: color-mix(in srgb, var(--mark) 58%, var(--ink));
+}
+.importance-expo.dot, .importance-expo.mark-dot, .legend i.importance-expo {
+  background: color-mix(in srgb, var(--mark) 34%, var(--ink));
+}
+.importance-race.dot, .importance-race.mark-dot, .legend i.importance-race {
+  background: color-mix(in srgb, var(--mark) 10%, var(--ink));
+}
+.importance-result.dot, .importance-result.mark-dot, .legend i.importance-result {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--mark) 18%, var(--ink));
+}
+.countdown .dot.importance-ballot { background: var(--mark); }
+.countdown .dot.importance-payment { background: color-mix(in srgb, var(--mark) 70%, white); }
+.countdown .dot.importance-expo { background: color-mix(in srgb, var(--mark) 40%, white); }
+.countdown .dot.importance-race { background: white; }
+.countdown .dot.importance-result {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--paper);
 }
 .cal-note, .fine { color: var(--muted); font-size: 0.86rem; }
 .day-panel { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 12px; }
 .day-panel h3 { font-family: Outfit, sans-serif; font-size: 1rem; letter-spacing: 0; }
 .day-panel ul { list-style: none; margin: 0; padding: 0; }
 .day-panel li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--paper-2); }
-.day-panel a { font-weight: 600; }
+.day-panel a { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 
 .countdown {
   background: var(--ink);
@@ -322,6 +384,17 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
 .race-when time { font-family: Fraunces, Georgia, serif; font-size: 1.15rem; white-space: nowrap; }
 .race-row strong { display: block; font-size: 1.05rem; }
 .race-row strong span, .race-row em { color: var(--muted); font-style: normal; font-weight: 400; }
+.pill.importance-ballot { background: var(--mark); color: var(--ink); }
+.pill.importance-payment { background: color-mix(in srgb, var(--mark) 58%, var(--ink)); color: var(--paper); }
+.pill.importance-expo { background: color-mix(in srgb, var(--mark) 34%, var(--ink)); color: var(--paper); }
+.pill.importance-race { background: color-mix(in srgb, var(--mark) 10%, var(--ink)); color: var(--paper); }
+.pill.importance-result {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--mark) 18%, var(--ink));
+}
+.race-row { box-shadow: inset 4px 0 0 var(--race-color, transparent); }
+.event-card { box-shadow: inset 0 5px 0 var(--race-color, transparent); }
 .pill, .status {
   display: inline-flex;
   align-items: center;
@@ -339,8 +412,33 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
 .status-awaiting { background: var(--result); color: white; }
 .status-candidate { background: var(--close); color: white; }
 
-.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 18px; }
+.filter-groups { display: flex; flex-direction: column; gap: 2px; margin: 4px 0 18px; }
+.filter-label {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+.filters button { display: inline-flex; align-items: center; gap: 6px; }
+.filters button i { width: 8px; height: 8px; border-radius: 99px; flex: none; background: var(--swatch, var(--mark, currentColor)); }
+.filters button i.sample { --mark: #d9d1c3; }
+.filters button i.sample.importance-payment,
+.filters button i.sample.importance-expo,
+.filters button i.sample.importance-race { background: color-mix(in srgb, var(--mark) 40%, var(--ink)); }
+.filters button i.sample.importance-expo { background: color-mix(in srgb, var(--mark) 22%, var(--ink)); }
+.filters button i.sample.importance-race { background: var(--ink); }
+.filters button i.sample.importance-result { background: transparent; box-shadow: inset 0 0 0 1.5px var(--ink); }
 .filters button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.filters button[aria-pressed="true"] i.sample.importance-ballot,
+.filters button[aria-pressed="true"] i.sample.importance-payment,
+.filters button[aria-pressed="true"] i.sample.importance-expo { background: var(--paper); }
+.filters button[aria-pressed="true"] i.sample.importance-race { background: white; }
+.filters button[aria-pressed="true"] i.sample.importance-result { background: transparent; box-shadow: inset 0 0 0 1.5px var(--paper); }
+.legend li.is-off { opacity: 0.35; }
+.empty-filter { padding: 14px 0; color: var(--muted); }
 .event-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .event-card {
   display: block;
@@ -368,6 +466,11 @@ h3 { margin: 0 0 6px; font-size: 1.35rem; }
   padding: 10px;
   min-width: 0;
 }
+.stage.importance-ballot { border-top-color: var(--mark); }
+.stage.importance-payment { border-top-color: color-mix(in srgb, var(--mark) 58%, var(--ink)); }
+.stage.importance-expo { border-top-color: color-mix(in srgb, var(--mark) 34%, var(--ink)); }
+.stage.importance-race { border-top-color: color-mix(in srgb, var(--mark) 10%, var(--ink)); }
+.stage.importance-result { border-top-color: transparent; box-shadow: inset 0 2px 0 color-mix(in srgb, var(--mark) 18%, var(--ink)); }
 .stage span { display: block; color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
 .stage b { display: block; margin-top: 4px; font-size: 0.92rem; }
 .layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr); gap: 28px; }
@@ -468,7 +571,7 @@ input[type="email"] {
   .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media print {
-  .site-header, .countdown-actions, .filters, .site-footer { display: none; }
+  .site-header, .countdown-actions, .filters, .filter-groups, .site-footer { display: none; }
   body { background: white; }
   .home-grid { display: block; }
 }

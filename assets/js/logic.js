@@ -14,6 +14,31 @@
     "qualifier_close",
   ];
 
+  const RACE_COLORS = {
+    "nyc-2026": "#b7cff5",
+    "tokyo-2027": "#f3c9c4",
+    "boston-2027": "#f3e2b0",
+    "london-2027": "#cfe3c8",
+    "cape-town-2027": "#c6ebe4",
+    "sydney-2027": "#c9e6f6",
+    "berlin-2027": "#ddd4f3",
+    "chicago-2027": "#f6d4bc",
+    "nyc-2027": "#f0e6c8",
+    "shanghai-2026": "#f6d0dc",
+  };
+
+  function raceColor(id) {
+    return RACE_COLORS[id] || "#e7e1d6";
+  }
+
+  function importanceOf(type) {
+    if (type === "result") return "result";
+    if (type === "payment") return "payment";
+    if (type === "expo") return "expo";
+    if (type === "race") return "race";
+    return "ballot";
+  }
+
   const SWATCH = {
     ballot_open: "ballot",
     ballot_close: "close",
@@ -91,6 +116,24 @@
     ));
   }
 
+  function filterEvents(events, options) {
+    const ids = options && options.ids;
+    const types = options && options.types;
+    let list = events;
+    if (ids && ids.length) {
+      const wanted = new Set(ids);
+      list = list.filter((event) => wanted.has(event.id));
+    }
+    if (types && types.length) {
+      const allowed = new Set(types);
+      list = list.map((event) => ({
+        ...event,
+        milestones: event.milestones.filter((milestone) => allowed.has(milestone.type)),
+      })).filter((event) => event.milestones.length);
+    }
+    return list;
+  }
+
   function calendarItems(events) {
     const items = [];
     events.forEach((event) => {
@@ -119,7 +162,6 @@
       });
       event.milestones.forEach((milestone) => {
         if (!milestone.at || consumed.has(milestone.id)) return;
-        if (milestone.type === "ballot_open" || milestone.type === "qualifier_open") return;
         const endYmd = milestone.endDate || milestone.date;
         items.push({
           kind: endYmd !== milestone.date ? "span" : "chip",
@@ -144,6 +186,7 @@
     if (milestone.type === "expo") return "expo";
     if (milestone.type === "race") return "race";
     if (milestone.type === "ballot_close" || milestone.type === "qualifier_close") return "closes";
+    if (milestone.type === "ballot_open" || milestone.type === "qualifier_open") return "opens";
     return milestone.label;
   }
 
@@ -542,6 +585,9 @@
     diffDays,
     monthWeeks,
     shiftMonth,
+    raceColor,
+    importanceOf,
+    filterEvents,
     calendarItems,
     monthModel,
     boundaries,

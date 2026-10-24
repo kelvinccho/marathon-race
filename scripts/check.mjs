@@ -69,6 +69,35 @@ if (existsSync(flatPath)) {
   assert(JSON.stringify(committed) === JSON.stringify(flat), "data/milestones.json is stale. Run node scripts/build.mjs.");
 }
 
+const sourceCount = data.events[0].milestones.length;
+const londonRace = logic.filterEvents(data.events, { ids: ["london-2027"], types: ["race"] });
+assert(londonRace.length === 1 && londonRace[0].id === "london-2027", "race filter should keep London");
+assert(londonRace[0].milestones.length === 1 && londonRace[0].milestones[0].type === "race", "date filter should keep the race milestone");
+assert(data.events[0].milestones.length === sourceCount, "filterEvents should not change the source file");
+assert(logic.filterEvents(data.events, { ids: [] }).length === data.events.length, "an empty race filter shows every race");
+assert(logic.filterEvents(data.events, { ids: ["missing"] }).length === 0, "an unknown race matches nothing");
+const ballots = logic.filterEvents(data.events, { types: ["ballot_open", "ballot_close"] });
+assert(ballots.every((event) => event.milestones.every((milestone) => milestone.type === "ballot_open" || milestone.type === "ballot_close")), "ballot filter leaked another date type");
+
+const opensOnly = logic.filterEvents(data.events, { types: ["ballot_open"] });
+const openItems = logic.calendarItems(opensOnly);
+assert(openItems.length > 0 && openItems.every((item) => item.milestone.type === "ballot_open"), "a ballot-open filter should still draw those milestones");
+const raceItems = logic.calendarItems(logic.filterEvents(data.events, { types: ["race"] }));
+assert(raceItems.length === data.events.length && raceItems.every((item) => item.milestone.type === "race"), "a race-day filter should keep one race day per event");
+
+const colors = data.events.map((event) => logic.raceColor(event.id));
+assert(new Set(colors).size === colors.length, "each race needs its own colour");
+colors.forEach((color, index) => {
+  assert(/^#[0-9a-f]{6}$/.test(color), `${data.events[index].id} colour should be a hex`);
+  const value = Number.parseInt(color.slice(1), 16);
+  const channels = [(value >> 16) & 255, (value >> 8) & 255, value & 255];
+  const average = channels.reduce((sum, channel) => sum + channel, 0) / 3;
+  assert(average >= 190 && Math.min(...channels) >= 150, `${data.events[index].id} colour should stay pale`);
+});
+assert(logic.importanceOf("ballot_open") === "ballot" && logic.importanceOf("qualifier_close") === "ballot", "entry windows are the lightest weight");
+assert(logic.importanceOf("result") === "result", "result has its own mark");
+assert(logic.importanceOf("expo") === "expo" && logic.importanceOf("race") === "race", "expo and race day keep their weights");
+
 const ics = logic.buildIcs(data);
 assert(ics.includes("BEGIN:VCALENDAR") && ics.includes("chicago-2027-ballot-close@marathon-race"), "calendar feed missing Chicago close");
 assert(ics.includes("DTSTART:20261029T190000Z"), "Chicago close should be 19:00 UTC on 29 Oct 2026");
