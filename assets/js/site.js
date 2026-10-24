@@ -20,6 +20,7 @@
     races: [],
     types: [],
     lang: "en",
+    menuOpen: false,
     plan: { ids: [], checks: {} },
     alerts: { email: "", eventIds: [], types: MR.MILESTONE_TYPES.slice() },
     alertSaved: false,
@@ -35,6 +36,7 @@
     app.addEventListener("click", onClick);
     app.addEventListener("change", onChange);
     app.addEventListener("submit", onSubmit);
+    document.addEventListener("keydown", onKey);
     try {
       const response = await fetch(`${root()}/data/events.json`);
       if (!response.ok) throw new Error(String(response.status));
@@ -112,17 +114,24 @@
   function header(page) {
     const link = (id, label, path) => `<a href="${esc(url(path))}"${page === id ? ' aria-current="page"' : ""}>${label}</a>`;
     const langButton = (id, label) => `<button class="text-button lang-button" type="button" data-action="lang" data-lang="${id}" aria-pressed="${state.lang === id}" lang="${id === "zh-Hant" ? "zh-Hant" : "en"}">${label}</button>`;
+    const menuLabel = t(state.menuOpen ? "Close menu" : "Menu");
     return `<a class="skip" href="#content">${esc(t("Skip to content"))}</a>
-      <header class="site-header"><div class="wrap header-row">
+      <header class="site-header"><div class="wrap header-row${state.menuOpen ? " is-open" : ""}">
         <a class="brand" href="${esc(url(""))}"><span class="mark" aria-hidden="true"></span>${esc(t("Marathon Race"))}</a>
         <nav class="nav" aria-label="${esc(t("Primary"))}">
-          ${link("home", esc(t("Home")), "")}
-          ${link("events", esc(t("Events")), "events/")}
-          ${link("plan", esc(t("Plan your race")), "plan/")}
-          ${link("about", esc(t("About")), "about/")}
+          <div class="nav-main" id="site-menu">
+            ${link("home", esc(t("Home")), "")}
+            ${link("events", esc(t("Events")), "events/")}
+            ${link("plan", esc(t("Plan your race")), "plan/")}
+            ${link("about", esc(t("About")), "about/")}
+            <div class="lang-switch" role="group" aria-label="${esc(t("Language"))}">${langButton("en", "EN")}${langButton("zh-Hant", "繁體")}</div>
+          </div>
           <a class="nav-alert" href="${esc(url("alerts/"))}"${page === "alerts" ? ' aria-current="page"' : ""}>${esc(t("Get Alerts"))}</a>
-          <div class="lang-switch" role="group" aria-label="${esc(t("Language"))}">${langButton("en", "EN")}${langButton("zh-Hant", "繁體")}</div>
         </nav>
+        <button class="menu-button" type="button" data-action="menu" aria-expanded="${state.menuOpen ? "true" : "false"}" aria-controls="site-menu">
+          <span class="sr">${esc(menuLabel)}</span>
+          <span class="menu-icon" aria-hidden="true"></span>
+        </button>
       </div></header>`;
   }
 
@@ -503,6 +512,14 @@ const next = data.milestones
     </div>`;
   }
 
+  function onKey(event) {
+    if (event.key !== "Escape" || !state.menuOpen) return;
+    state.menuOpen = false;
+    keepScroll(render);
+    const button = document.querySelector(".menu-button");
+    if (button) button.focus();
+  }
+
   function onClick(event) {
     const target = event.target.closest("[data-action]");
     if (!target) return;
@@ -545,6 +562,11 @@ const next = data.milestones
       else state.types.push(type);
       saveView();
       keepScroll(render);
+    } else if (action === "menu") {
+      state.menuOpen = !state.menuOpen;
+      keepScroll(render);
+      const focusTarget = state.menuOpen ? document.querySelector("#site-menu a") : document.querySelector(".menu-button");
+      if (focusTarget) focusTarget.focus();
     } else if (action === "lang") {
       state.lang = target.dataset.lang === "zh-Hant" ? "zh-Hant" : "en";
       localStorage.setItem("marathon-race-lang", state.lang);

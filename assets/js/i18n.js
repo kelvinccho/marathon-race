@@ -13,6 +13,8 @@
     "Get Alerts": "接收提醒",
     "Get alerts": "接收提醒",
     "Language": "語言",
+    "Menu": "選單",
+    "Close menu": "關閉選單",
     "Primary": "主要",
     "Checked": "查核日期",
     "Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser.": "獨立行事曆。與 Abbott World Marathon Majors 或任何賽事主辦單位無關。",
