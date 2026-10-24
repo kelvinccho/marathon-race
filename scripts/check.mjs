@@ -3,6 +3,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const logic = require("../assets/js/logic.js");
+const i18n = require("../assets/js/i18n.js");
 
 const data = JSON.parse(readFileSync(new URL("../data/events.json", import.meta.url), "utf8"));
 const errors = logic.validate(data);
@@ -101,5 +102,15 @@ assert(logic.importanceOf("expo") === "expo" && logic.importanceOf("race") === "
 const ics = logic.buildIcs(data);
 assert(ics.includes("BEGIN:VCALENDAR") && ics.includes("chicago-2027-ballot-close@marathon-race"), "calendar feed missing Chicago close");
 assert(ics.includes("DTSTART:20261029T190000Z"), "Chicago close should be 19:00 UTC on 29 Oct 2026");
+
+const coverage = i18n.coverageErrors(data);
+assert(coverage.length === 0, coverage.join("; "));
+const english = i18n.localize(data, "en");
+assert(english.events[0].name === data.events[0].name && english.events[0].summary === data.events[0].summary, "English view should keep the source text");
+const siteSource = readFileSync(new URL("../assets/js/site.js", import.meta.url), "utf8");
+const uiKeys = [...siteSource.matchAll(/\bt\(\s*"([^"\\]*)"\s*\)/g)].map((match) => match[1]);
+uiKeys.forEach((key) => {
+  assert(i18n.has("zh-Hant", key), `missing Traditional Chinese UI string: ${key}`);
+});
 
 console.log(`ok ${data.events.length} events, ${flat.milestones.length} milestones`);

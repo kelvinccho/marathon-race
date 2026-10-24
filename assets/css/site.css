@@ -86,6 +86,20 @@ button, input { font: inherit; color: inherit; }
     radial-gradient(circle at 35px 8px, #1c1916 3.5px, transparent 4px);
 }
 .nav { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; }
+.lang-switch { display: inline-flex; gap: 4px; margin-left: 4px; }
+.lang-button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+html[lang="zh-Hant"] body,
+html[lang="zh-Hant"] button,
+html[lang="zh-Hant"] input {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Outfit, "Segoe UI", sans-serif;
+}
+html[lang="zh-Hant"] h1,
+html[lang="zh-Hant"] h2,
+html[lang="zh-Hant"] h3,
+html[lang="zh-Hant"] .brand,
+html[lang="zh-Hant"] .race-when time {
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Fraunces, Georgia, serif;
+}
 .nav a {
   text-decoration: none;
   padding: 8px 12px;

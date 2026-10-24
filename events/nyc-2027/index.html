@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"TCS New York City Marathon 2027","startDate":"2027-11-07","endDate":"2027-11-07","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"New York","address":{"@type":"PostalAddress","addressLocality":"New York","addressCountry":"US"}},"url":"https://www.nyrr.org/tcsnycmarathon","description":"The 2027 general drawing is not on the calendar yet. In 2026 it ran from 4 to 25 February, with results on 4 March. Expect a February 2027 window and wait for NYRR before you treat any date as real. Time qualifiers, charity, and tour operators have their own windows. The 9+1 programme finished in 2026 earns a place in the 2028 race, not 2027."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>TCS New York City Marathon 2027</h1><p>The 2027 general drawing is not on the calendar yet. In 2026 it ran from 4 to 25 February, with results on 4 March. Expect a February 2027 window and wait for NYRR before you treat any date as real. Time qualifiers, charity, and tour operators have their own windows. The 9+1 programme finished in 2026 earns a place in the 2028 race, not 2027.</p><ul><li><strong>Drawing opens</strong> — Not announced</li><li><strong>Drawing closes</strong> — Not announced</li><li><strong>Drawing results</strong> — Not announced</li><li><strong>Payment</strong> — Not announced</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-11-07</li></ul><p><a href="https://www.nyrr.org/tcsnycmarathon">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>TCS New York City Marathon 2027</h1><p>The 2027 general drawing is not on the calendar yet. In 2026 it ran from 4 to 25 February, with results on 4 March. Expect a February 2027 window and wait for NYRR before you treat any date as real. Time qualifiers, charity, and tour operators have their own windows. The 9+1 programme finished in 2026 earns a place in the 2028 race, not 2027.</p><ul><li><strong>Drawing opens</strong> — Not announced</li><li><strong>Drawing closes</strong> — Not announced</li><li><strong>Drawing results</strong> — Not announced</li><li><strong>Payment</strong> — Not announced</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-11-07</li></ul><p><a href="https://www.nyrr.org/tcsnycmarathon">Official site</a></p></article><article lang="zh-Hant"><h1>TCS New York City Marathon 2027</h1><p>2027 年一般抽籤還沒有寫上行事曆。2026 年是 2 月 4 日至 25 日，結果在 3 月 4 日。預期是 2027 年 2 月的一個時段，在 NYRR 公布之前，不要把任何日期當成確定。成績達標、慈善與旅行團各有自己的時段。2026 年完成的 9+1 計劃取得的是 2028 年的名額，不是 2027 年。</p><ul><li><strong>抽籤開始</strong> — 尚未公布</li><li><strong>抽籤截止</strong> — 尚未公布</li><li><strong>抽籤結果</strong> — 尚未公布</li><li><strong>繳費</strong> — 尚未公布</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽日</strong> — 2027-11-07</li></ul><p><a href="https://www.nyrr.org/tcsnycmarathon">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

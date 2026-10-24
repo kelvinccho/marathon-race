@@ -1,5 +1,6 @@
 (function () {
   const MR = window.MRLogic;
+  const I18N = window.MRI18n;
   const FLAGS = { US: "🇺🇸", JP: "🇯🇵", GB: "🇬🇧", ZA: "🇿🇦", AU: "🇦🇺", DE: "🇩🇪", CN: "🇨🇳" };
   const CHECKS = [
     ["entered", "Application submitted"],
@@ -18,6 +19,7 @@
     filter: "all",
     races: [],
     types: [],
+    lang: "en",
     plan: { ids: [], checks: {} },
     alerts: { email: "", eventIds: [], types: MR.MILESTONE_TYPES.slice() },
     alertSaved: false,
@@ -37,6 +39,8 @@
       const response = await fetch(`${root()}/data/events.json`);
       if (!response.ok) throw new Error(String(response.status));
       state.data = await response.json();
+      state.lang = I18N.initialLang();
+      MR.setLocale(langTag());
       state.plan = loadJson("marathon-race-plan-v1", state.plan);
       state.alerts = loadJson("marathon-race-alerts-v1", defaultAlerts());
       loadView();
@@ -44,7 +48,7 @@
       render();
       setInterval(tick, 1000);
     } catch (error) {
-      app.innerHTML = `<p class="loading">The calendar could not load <a href="${esc(url("data/events.json"))}">events.json</a>.</p>`;
+      app.innerHTML = `<p class="loading">${esc(t("The calendar could not load"))} <a href="${esc(url("data/events.json"))}">events.json</a>.</p>`;
     }
   }
 
@@ -65,15 +69,31 @@
     state.selected = today.startsWith(`${state.year}-${pad(state.month)}`) ? today : `${state.year}-${pad(state.month)}-01`;
   }
 
+  function t(value) {
+    return I18N.text(state.lang, value);
+  }
+
+  function langTag() {
+    return state.lang === "zh-Hant" ? "zh-Hant" : "en-GB";
+  }
+
+  function view() {
+    return I18N.localize(state.data, state.lang);
+  }
+
   function render() {
     const page = document.documentElement.dataset.page;
+    MR.setLocale(langTag());
+    document.documentElement.lang = state.lang === "zh-Hant" ? "zh-Hant" : "en";
+    ensureCjkFont();
+    const brand = t("Marathon Race");
     const titles = {
-      home: "Marathon Race",
-      events: "Events — Marathon Race",
-      event: "Event — Marathon Race",
-      plan: "Plan your race — Marathon Race",
-      about: "About — Marathon Race",
-      alerts: "Get alerts — Marathon Race",
+      home: brand,
+      events: `${t("Events")} — ${brand}`,
+      event: `${t("Event")} — ${brand}`,
+      plan: `${t("Plan your race")} — ${brand}`,
+      about: `${t("About")} — ${brand}`,
+      alerts: `${t("Get alerts")} — ${brand}`,
     };
     document.title = titles[page] || titles.home;
     rememberBoundary();
@@ -91,23 +111,25 @@
 
   function header(page) {
     const link = (id, label, path) => `<a href="${esc(url(path))}"${page === id ? ' aria-current="page"' : ""}>${label}</a>`;
-    return `<a class="skip" href="#content">Skip to content</a>
+    const langButton = (id, label) => `<button class="text-button lang-button" type="button" data-action="lang" data-lang="${id}" aria-pressed="${state.lang === id}" lang="${id === "zh-Hant" ? "zh-Hant" : "en"}">${label}</button>`;
+    return `<a class="skip" href="#content">${esc(t("Skip to content"))}</a>
       <header class="site-header"><div class="wrap header-row">
-        <a class="brand" href="${esc(url(""))}"><span class="mark" aria-hidden="true"></span>Marathon Race</a>
-        <nav class="nav" aria-label="Primary">
-          ${link("home", "Home", "")}
-          ${link("events", "Events", "events/")}
-          ${link("plan", "Plan your race", "plan/")}
-          ${link("about", "About", "about/")}
-          <a class="nav-alert" href="${esc(url("alerts/"))}"${page === "alerts" ? ' aria-current="page"' : ""}>Get Alerts</a>
+        <a class="brand" href="${esc(url(""))}"><span class="mark" aria-hidden="true"></span>${esc(t("Marathon Race"))}</a>
+        <nav class="nav" aria-label="${esc(t("Primary"))}">
+          ${link("home", esc(t("Home")), "")}
+          ${link("events", esc(t("Events")), "events/")}
+          ${link("plan", esc(t("Plan your race")), "plan/")}
+          ${link("about", esc(t("About")), "about/")}
+          <a class="nav-alert" href="${esc(url("alerts/"))}"${page === "alerts" ? ' aria-current="page"' : ""}>${esc(t("Get Alerts"))}</a>
+          <div class="lang-switch" role="group" aria-label="${esc(t("Language"))}">${langButton("en", "EN")}${langButton("zh-Hant", "繁體")}</div>
         </nav>
       </div></header>`;
   }
 
   function footer() {
     return `<footer class="site-footer"><div class="wrap footer-row">
-      <p>Checked ${esc(checkedLabel())}. Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser. ${esc(state.data.disclaimer)}</p>
-      <nav aria-label="Data">
+      <p>${esc(t("Checked"))} ${esc(checkedLabel())}. ${esc(t("Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser."))} ${esc(view().disclaimer)}</p>
+      <nav aria-label="${esc(t("Data"))}">
         <a href="${esc(url("data/events.json"))}">events.json</a>
         <a href="${esc(url("data/milestones.json"))}">milestones.json</a>
         <a href="${esc(url("calendar.ics"))}">calendar.ics</a>
@@ -124,43 +146,43 @@
     const after = ahead[1];
     const opens = MR.openWindows(events, state.now);
     const scopeNote = state.races.length || state.types.length
-      ? "Matching the races and milestones selected above."
-      : "In order of the next date on each race.";
+      ? t("Matching the races and milestones selected above.")
+      : t("In order of the next date on each race.");
     return `<div class="wrap">
-      <p class="eyebrow">World Marathon Majors</p>
-      <h1>Every date between the ballot and the start.</h1>
-      <p class="lede">Ballot open, ballot close, result, payment, expo, and race day. The clock is the next real instant. The bars sit on the race city's own date. Each race keeps one pale colour, and a darker mark means a more important date.</p>
+      <p class="eyebrow">${esc(t("World Marathon Majors"))}</p>
+      <h1>${esc(t("Every date between the ballot and the start."))}</h1>
+      <p class="lede">${esc(t("Ballot open, ballot close, result, payment, expo, and race day. The clock is the next real instant. The bars sit on the race city's own date. Each race keeps one pale colour, and a darker mark means a more important date."))}</p>
       <div class="filter-groups">${raceFilters()}${milestoneFilters()}</div>
       <div class="home-grid">
-        <section class="card calendar" aria-label="Month calendar">
+        <section class="card calendar" aria-label="${esc(t("Month calendar"))}">
           <div class="cal-head">
             <h2>${esc(MR.formatMonth(state.year, state.month))}</h2>
             <div class="month-nav">
-              <button class="icon-button" type="button" data-action="month" data-delta="-1" aria-label="Previous month">Prev</button>
-              <button class="text-button" type="button" data-action="today">Today</button>
-              <button class="icon-button" type="button" data-action="month" data-delta="1" aria-label="Next month">Next</button>
+              <button class="icon-button" type="button" data-action="month" data-delta="-1" aria-label="${esc(t("Previous month"))}">${esc(t("Prev"))}</button>
+              <button class="text-button" type="button" data-action="today">${esc(t("Today"))}</button>
+              <button class="icon-button" type="button" data-action="month" data-delta="1" aria-label="${esc(t("Next"))}">${esc(t("Next"))}</button>
             </div>
           </div>
           <div class="cal-scroll"><div class="cal-grid">
-            <div class="dow">${["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => `<span>${day}</span>`).join("")}</div>
+            <div class="dow">${(state.lang === "zh-Hant" ? ["一", "二", "三", "四", "五", "六", "日"] : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]).map((day) => `<span>${day}</span>`).join("")}</div>
             ${weeks.map((week) => weekHtml(week, boundary)).join("")}
           </div></div>
           <ul class="legend">
-            ${legendItem("ballot", "Ballot, lightest")}
-            ${legendItem("result", "Result, border only")}
-            ${legendItem("payment", "Payment")}
-            ${legendItem("expo", "Expo, dark")}
-            ${legendItem("race", "Race day, darkest")}
+            ${legendItem("ballot", t("Ballot, lightest"))}
+            ${legendItem("result", t("Result, border only"))}
+            ${legendItem("payment", t("Payment"))}
+            ${legendItem("expo", t("Expo, dark"))}
+            ${legendItem("race", t("Race day, darkest"))}
           </ul>
-          <p class="cal-note">A darker cap is the day that window closes. Today's date is the filled circle.</p>
+          <p class="cal-note">${esc(t("A darker cap is the day that window closes. Today's date is the filled circle."))}</p>
           ${dayPanel(state.selected || today, events)}
         </section>
         <div class="countdown-wrap">${countdownCard(boundary, after, opens)}</div>
       </div>
       <section class="section">
-        <div class="section-head"><h2>Upcoming</h2></div>
+        <div class="section-head"><h2>${esc(t("Upcoming"))}</h2></div>
         <p class="fine">${esc(scopeNote)}</p>
-        <ol class="race-list">${upcomingEvents(events).map(raceRow).join("") || "<li class=\"empty-filter\">Nothing matches this filter.</li>"}</ol>
+        <ol class="race-list">${upcomingEvents(events).map(raceRow).join("") || `<li class="empty-filter">${esc(t("Nothing matches this filter."))}</li>`}</ol>
       </section>
     </div>`;
   }
@@ -193,12 +215,12 @@
     const items = MR.calendarItems(events).filter((item) => item.startYmd <= ymd && item.endYmd >= ymd);
     const rows = items.length ? items.map((item) => {
       let detail = item.label;
-      if (item.kind === "span" && ymd === item.endYmd) detail = `${item.event.shortName} · closes`;
-      else if (item.kind === "span" && ymd === item.startYmd) detail = `${item.event.shortName} · opens`;
-      else if (item.kind === "span") detail = `${item.label} · open`;
+      if (item.kind === "span" && ymd === item.endYmd) detail = `${item.event.shortName} · ${t("closes")}`;
+      else if (item.kind === "span" && ymd === item.startYmd) detail = `${item.event.shortName} · ${t("opens")}`;
+      else if (item.kind === "span") detail = `${item.label} · ${t("open")}`;
       const importance = MR.importanceOf(item.milestone.type);
       return `<li><a href="${esc(url(`events/${item.event.id}/`))}"><i class="dot importance-${importance}" style="--race-color:${esc(MR.raceColor(item.event.id))}"></i>${esc(detail)}</a><span class="fine">${esc(item.event.city)}</span></li>`;
-    }).join("") : "<li>Nothing scheduled on this date. Open ballots still show as bars across their window.</li>";
+    }).join("") : `<li>${esc(t("Nothing scheduled on this date. Open ballots still show as bars across their window."))}</li>`;
     return `<div class="day-panel"><h3>${esc(MR.formatYmdLong(ymd))}</h3><ul>${rows}</ul></div>`;
   }
 
@@ -206,32 +228,33 @@
     if (!boundary) {
       const filtered = state.races.length || state.types.length;
       return filtered
-        ? `<section class="countdown"><h2>Nothing in this filter.</h2><p>Choose another race or milestone, or show all of them.</p></section>`
-        : `<section class="countdown"><h2>Nothing dated ahead.</h2><p>New windows land in the JSON when an organiser publishes them.</p></section>`;
+        ? `<section class="countdown"><h2>${esc(t("Nothing in this filter."))}</h2><p>${esc(t("Choose another race or milestone, or show all of them."))}</p></section>`
+        : `<section class="countdown"><h2>${esc(t("Nothing dated ahead."))}</h2><p>${esc(t("New windows land in the JSON when an organiser publishes them."))}</p></section>`;
     }
     const heading = MR.boundaryHeading(boundary);
     const iso = boundary.phase === "end" ? boundary.milestone.end : boundary.milestone.at;
-    const openRows = opens.map((window) => `<li><a href="${esc(url(`events/${window.event.id}/`))}"><span>${esc(window.event.shortName)} ${esc(window.open.label)}</span><small>closes ${esc(MR.formatDayMonth(window.close.at, window.event.timeZone))}</small></a></li>`).join("");
+    const units = clockUnits();
+    const openRows = opens.map((window) => `<li><a href="${esc(url(`events/${window.event.id}/`))}"><span>${esc(window.event.shortName)} ${esc(window.open.label)}</span><small>${esc(t("closes"))} ${esc(MR.formatDayMonth(window.close.at, window.event.timeZone))}</small></a></li>`).join("");
     return `<section class="countdown" aria-labelledby="next-heading">
       <p class="viewer-now" data-viewer-now></p>
-      <p class="kicker">${esc(heading.kicker)}</p>
-      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(heading.title)}</p>
+      <p class="kicker">${esc(t(heading.kicker))}</p>
+      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(t(heading.title))}</p>
       <h2 id="next-heading">${esc(boundary.event.name)}</h2>
       <p class="fine">${esc(String(boundary.event.edition))} · ${esc(boundary.event.city)}</p>
       <div class="clock" data-clock-at="${boundary.t}" role="timer" aria-describedby="countdown-live">
-        <div><b data-dd>00</b><span>Days</span></div>
-        <div><b data-hh>00</b><span>Hours</span></div>
-        <div><b data-mm>00</b><span>Minutes</span></div>
-        <div><b data-ss>00</b><span>Seconds</span></div>
+        <div><b data-dd>00</b><span>${esc(units[0])}</span></div>
+        <div><b data-hh>00</b><span>${esc(units[1])}</span></div>
+        <div><b data-mm>00</b><span>${esc(units[2])}</span></div>
+        <div><b data-ss>00</b><span>${esc(units[3])}</span></div>
       </div>
       <p class="when">${esc(whenLine(boundary))}</p>
-      ${clockNote(boundary) ? `<p class="fine">${esc(clockNote(boundary))}</p>` : ""}
-      ${after ? `<p class="fine">After that · ${esc(after.event.shortName)} · ${esc(MR.boundaryHeading(after).title)} · ${esc(MR.formatDayMonth(after.phase === "end" ? after.milestone.end : after.milestone.at, after.event.timeZone))}</p>` : ""}
+      ${clockNote(boundary) ? `<p class="fine">${esc(t(clockNote(boundary)))}</p>` : ""}
+      ${after ? `<p class="fine">${esc(t("After that"))} · ${esc(after.event.shortName)} · ${esc(t(MR.boundaryHeading(after).title))} · ${esc(MR.formatDayMonth(after.phase === "end" ? after.milestone.end : after.milestone.at, after.event.timeZone))}</p>` : ""}
       <div class="countdown-actions">
-        <a class="button" href="${esc(url(`events/${boundary.event.id}/`))}">Event page</a>
-        <button class="button-ghost" type="button" data-action="show-boundary" data-date="${esc(boundary.phase === "end" ? (boundary.milestone.endDate || boundary.milestone.date) : boundary.milestone.date)}">Show on calendar</button>
+        <a class="button" href="${esc(url(`events/${boundary.event.id}/`))}">${esc(t("Event page"))}</a>
+        <button class="button-ghost" type="button" data-action="show-boundary" data-date="${esc(boundary.phase === "end" ? (boundary.milestone.endDate || boundary.milestone.date) : boundary.milestone.date)}">${esc(t("Show on calendar"))}</button>
       </div>
-      ${openRows ? `<p class="kicker">Open now</p><ul class="open-now">${openRows}</ul>` : ""}
+      ${openRows ? `<p class="kicker">${esc(t("Open now"))}</p><ul class="open-now">${openRows}</ul>` : ""}
       <p class="sr" id="countdown-live"></p>
     </section>`;
   }
@@ -242,12 +265,12 @@
     const status = MR.statusOf(source, state.now);
     const when = next ? MR.formatDayMonth(next.phase === "end" ? next.milestone.end : next.milestone.at, event.timeZone) : "—";
     const importance = next ? MR.importanceOf(next.milestone.type) : "ballot";
-    const label = next ? pillLabel(next) : "Date";
-    const detail = next ? `${MR.boundaryHeading(next).title} · ${whenLine(next)}` : "Dates not announced";
+    const label = next ? t(pillLabel(next)) : t("Date");
+    const detail = next ? `${t(MR.boundaryHeading(next).title)} · ${whenLine(next)}` : t("Dates not announced");
     return `<li><a class="race-row" style="--race-color:${esc(MR.raceColor(event.id))}" href="${esc(url(`events/${event.id}/`))}">
       <span class="race-when"><time>${esc(when)}</time><span class="pill importance-${importance}">${esc(label)}</span></span>
       <span><strong>${esc(flag(event))} ${esc(event.name)} <span>${esc(String(event.edition))}</span></strong><em>${esc(event.city)} · ${esc(detail)}</em></span>
-      <span class="status status-${esc(status.key)}">${esc(status.label)}</span>
+      <span class="status status-${esc(status.key)}">${esc(t(status.label))}</span>
     </a></li>`;
   }
 
@@ -260,84 +283,84 @@
       ["upcoming", "Not announced"],
       ["candidate", "Candidate"],
     ];
-    const events = state.data.events.slice().sort((a, b) => a.order - b.order).filter((event) => {
+    const events = view().events.slice().sort((a, b) => a.order - b.order).filter((event) => {
       if (state.races.length && !state.races.includes(event.id)) return false;
       if (state.types.length && !event.milestones.some((milestone) => state.types.includes(milestone.type))) return false;
       if (state.filter === "all") return true;
       return MR.statusOf(event, state.now).key === state.filter;
     });
-    const statusButtons = filters.map(([id, label]) => `<button class="text-button" type="button" data-action="filter" data-filter="${id}" aria-pressed="${state.filter === id}">${label}</button>`).join("");
+    const statusButtons = filters.map(([id, label]) => `<button class="text-button" type="button" data-action="filter" data-filter="${id}" aria-pressed="${state.filter === id}">${esc(t(label))}</button>`).join("");
     return `<div class="wrap">
-      <p class="eyebrow">Events</p>
-      <h1>The majors, and the candidate.</h1>
-      <p class="lede">Eight World Marathon Majors, the New York race still in race week, and Shanghai while it is being assessed. Open a race for the full date list and the official page.</p>
+      <p class="eyebrow">${esc(t("Events"))}</p>
+      <h1>${esc(t("The majors, and the candidate."))}</h1>
+      <p class="lede">${esc(t("Eight World Marathon Majors, the New York race still in race week, and Shanghai while it is being assessed. Open a race for the full date list and the official page."))}</p>
       <div class="filter-groups">
-        <div class="filter-group"><p class="filter-label" id="status-filter-label">Status</p><div class="filters" role="group" aria-labelledby="status-filter-label">${statusButtons}</div></div>
+        <div class="filter-group"><p class="filter-label" id="status-filter-label">${esc(t("Status"))}</p><div class="filters" role="group" aria-labelledby="status-filter-label">${statusButtons}</div></div>
         ${raceFilters()}
         ${milestoneFilters()}
       </div>
-      <div class="event-cards">${events.map(eventCard).join("") || "<p>Nothing in this filter.</p>"}</div>
+      <div class="event-cards">${events.map(eventCard).join("") || `<p>${esc(t("Nothing in this filter."))}</p>`}</div>
     </div>`;
   }
 
   function eventCard(event) {
     const status = MR.statusOf(event, state.now);
-    const stages = visibleStages(event).map((stage) => `<div><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`).join("");
+    const stages = visibleStages(event).map((stage) => `<div><span>${esc(t(stage.label))}</span><b>${esc(stageText(event, stage))}</b></div>`).join("");
     return `<a class="event-card" style="--race-color:${esc(MR.raceColor(event.id))}" href="${esc(url(`events/${event.id}/`))}">
-      <p class="meta">${esc(flag(event))} ${esc(event.city)} · ${esc(event.seriesStatus === "candidate" ? "Candidate" : "Major")}</p>
+      <p class="meta">${esc(flag(event))} ${esc(event.city)} · ${esc(event.seriesStatus === "candidate" ? t("Candidate") : t("Major"))}</p>
       <h2>${esc(event.shortName)} ${esc(String(event.edition))}</h2>
-      <span class="status status-${esc(status.key)}">${esc(status.label)}</span>
+      <span class="status status-${esc(status.key)}">${esc(t(status.label))}</span>
       <div class="mini-stages">${stages}</div>
     </a>`;
   }
 
   function renderEvent() {
-    const event = state.data.events.find((item) => item.id === document.documentElement.dataset.event);
-    if (!event) return `<div class="wrap"><h1>Event not found.</h1></div>`;
-    document.title = `${event.name} ${event.edition} — Marathon Race`;
+    const event = view().events.find((item) => item.id === document.documentElement.dataset.event);
+    if (!event) return `<div class="wrap"><h1>${esc(t("Event not found."))}</h1></div>`;
+    document.title = `${event.name} ${event.edition} — ${t("Marathon Race")}`;
     const next = MR.boundaries([event], state.now)[0];
     const status = MR.statusOf(event, state.now);
     const planned = state.plan.ids.includes(event.id);
     const stages = MR.stagesOf(event).map((stage) => {
       const type = stage.milestone ? stage.milestone.type : "ballot";
-      return `<div class="stage importance-${esc(MR.importanceOf(type))}"><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`;
+      return `<div class="stage importance-${esc(MR.importanceOf(type))}"><span>${esc(t(stage.label))}</span><b>${esc(stageText(event, stage))}</b></div>`;
     }).join("");
     const rows = timeline(event);
     const monday = MR.planStartFor(event);
     return `<div class="wrap" style="--race-color:${esc(MR.raceColor(event.id))}">
-      <p class="eyebrow"><a href="${esc(url("events/"))}">Events</a> · ${esc(event.seriesStatus === "candidate" ? "Candidate" : "World Marathon Major")}</p>
+      <p class="eyebrow"><a href="${esc(url("events/"))}">${esc(t("Events"))}</a> · ${esc(event.seriesStatus === "candidate" ? t("Candidate") : t("World Marathon Major"))}</p>
       <div class="hero-row">
         <div>
           <h1>${esc(flag(event))} ${esc(event.name)}</h1>
-          <p class="lede">${esc(event.city)}, ${esc(event.country)} · ${esc(raceRange(event))} · <span class="status status-${esc(status.key)}">${esc(status.label)}</span></p>
+          <p class="lede">${esc(event.city)}, ${esc(event.country)} · ${esc(raceRange(event))} · <span class="status status-${esc(status.key)}">${esc(t(status.label))}</span></p>
         </div>
         <div class="actions">
-          <a class="button" href="${esc(event.entryUrl)}" target="_blank" rel="noopener noreferrer">Entry page</a>
-          <a class="button-ghost" href="${esc(event.officialUrl)}" target="_blank" rel="noopener noreferrer">Official site</a>
+          <a class="button" href="${esc(event.entryUrl)}" target="_blank" rel="noopener noreferrer">${esc(t("Entry page"))}</a>
+          <a class="button-ghost" href="${esc(event.officialUrl)}" target="_blank" rel="noopener noreferrer">${esc(t("Official site"))}</a>
         </div>
       </div>
       <div class="stages">${stages}</div>
       ${next ? `<section class="countdown" style="margin-bottom:22px">${miniClock(next)}</section>` : ""}
       <div class="layout">
         <section>
-          <h2>Dates</h2>
+          <h2>${esc(t("Dates"))}</h2>
           <ol class="timeline">${rows}</ol>
         </section>
         <aside class="facts">
-          <h2>Entry</h2>
+          <h2>${esc(t("Entry"))}</h2>
           <p>${esc(event.summary)}</p>
           <dl>
-            <dt>Fee</dt><dd>${esc(event.fee.summary)}</dd>
-            <dt>Odds</dt><dd>${esc(event.odds.summary)}</dd>
-            ${event.fieldNote ? `<dt>Field</dt><dd>${esc(event.fieldNote)}</dd>` : ""}
-            <dt>Watch</dt><dd>${esc(event.watchOut)}</dd>
-            <dt>16-week block</dt><dd>${monday ? `Starts ${esc(MR.formatYmdLong(monday))}.` : "Not enough of a race date to count."} This is a planning anchor, not a workout plan.</dd>
+            <dt>${esc(t("Fee"))}</dt><dd>${esc(event.fee.summary)}</dd>
+            <dt>${esc(t("Odds"))}</dt><dd>${esc(event.odds.summary)}</dd>
+            ${event.fieldNote ? `<dt>${esc(t("Field"))}</dt><dd>${esc(event.fieldNote)}</dd>` : ""}
+            <dt>${esc(t("Watch"))}</dt><dd>${esc(event.watchOut)}</dd>
+            <dt>${esc(t("16-week block"))}</dt><dd>${monday ? `${esc(blockStarts(monday))} ` : esc(t("Not enough of a race date to count."))}${esc(t("This is a planning anchor, not a workout plan."))}</dd>
           </dl>
           <div class="actions">
-            <button class="button" type="button" data-action="plan-add" data-id="${esc(event.id)}">${planned ? "In your plan" : "Add to your plan"}</button>
-            <button class="button-ghost" type="button" data-action="download-event" data-id="${esc(event.id)}">Download dates</button>
+            <button class="button" type="button" data-action="plan-add" data-id="${esc(event.id)}">${esc(planned ? t("In your plan") : t("Add to your plan"))}</button>
+            <button class="button-ghost" type="button" data-action="download-event" data-id="${esc(event.id)}">${esc(t("Download dates"))}</button>
           </div>
-          <h3>Sources</h3>
+          <h3>${esc(t("Sources"))}</h3>
           <ul>${event.sources.map((source) => `<li><a href="${esc(source.url)}" target="_blank" rel="noopener noreferrer">${esc(source.label)}</a></li>`).join("")}</ul>
         </aside>
       </div>
@@ -346,9 +369,10 @@
 
   function miniClock(boundary) {
     const heading = MR.boundaryHeading(boundary);
-    return `<p class="kicker">This race</p>
-      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(heading.title)}</p>
-      <div class="clock" data-clock-at="${boundary.t}"><div><b data-dd>00</b><span>Days</span></div><div><b data-hh>00</b><span>Hours</span></div><div><b data-mm>00</b><span>Minutes</span></div><div><b data-ss>00</b><span>Seconds</span></div></div>
+    const units = clockUnits();
+    return `<p class="kicker">${esc(t("This race"))}</p>
+      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(t(heading.title))}</p>
+      <div class="clock" data-clock-at="${boundary.t}"><div><b data-dd>00</b><span>${esc(units[0])}</span></div><div><b data-hh>00</b><span>${esc(units[1])}</span></div><div><b data-mm>00</b><span>${esc(units[2])}</span></div><div><b data-ss>00</b><span>${esc(units[3])}</span></div></div>
       <p>${esc(whenLine(boundary))}</p>`;
   }
 
@@ -361,40 +385,40 @@
       return `<li class="${past ? "is-past" : ""}">
         <span class="mark-dot importance-${esc(MR.importanceOf(milestone.type))}${milestone.precision === "tbc" ? " is-tbc" : ""}"></span>
         <div>
-          <h3>${esc(milestone.label)}${current ? ' <span class="badge">Next</span>' : ""} <span class="badge">${esc(milestone.confidence)}</span></h3>
+          <h3>${esc(milestone.label)}${current ? ` <span class="badge">${esc(t("Up next"))}</span>` : ""} <span class="badge">${esc(t(milestone.confidence))}</span></h3>
           <p>${esc(when)}</p>
           ${milestone.note ? `<p class="fine">${esc(milestone.note)}</p>` : ""}
-          ${milestone.sourceUrl ? `<p class="fine"><a href="${esc(milestone.sourceUrl)}" target="_blank" rel="noopener noreferrer">Source</a></p>` : ""}
+          ${milestone.sourceUrl ? `<p class="fine"><a href="${esc(milestone.sourceUrl)}" target="_blank" rel="noopener noreferrer">${esc(t("Source"))}</a></p>` : ""}
         </div>
       </li>`;
     }).join("");
   }
 
   function renderPlan() {
-    const selected = state.data.events.filter((event) => state.plan.ids.includes(event.id));
+    const selected = view().events.filter((event) => state.plan.ids.includes(event.id));
     const merged = MR.boundaries(selected, state.now).filter((boundary) => !(boundary.phase === "end" && boundary.milestone.type === "race")).slice(0, 12);
-    const choices = state.data.events.slice().sort((a, b) => a.order - b.order).map((event) => {
+    const choices = view().events.slice().sort((a, b) => a.order - b.order).map((event) => {
       const on = state.plan.ids.includes(event.id);
-      return `<label class="choice"><input type="checkbox" data-action="plan-toggle" data-id="${esc(event.id)}"${on ? " checked" : ""}> <span><strong>${esc(flag(event))} ${esc(event.shortName)} ${esc(String(event.edition))}</strong><br><span class="fine">${esc(event.city)} · ${esc(MR.statusOf(event, state.now).label)}</span></span></label>`;
+      return `<label class="choice"><input type="checkbox" data-action="plan-toggle" data-id="${esc(event.id)}"${on ? " checked" : ""}> <span><strong>${esc(flag(event))} ${esc(event.shortName)} ${esc(String(event.edition))}</strong><br><span class="fine">${esc(event.city)} · ${esc(t(MR.statusOf(event, state.now).label))}</span></span></label>`;
     }).join("");
     const cards = selected.map((event) => {
       const checks = state.plan.checks[event.id] || {};
       const monday = MR.planStartFor(event);
-      const boxes = CHECKS.map(([key, label]) => `<li><label><input type="checkbox" data-action="plan-check" data-id="${esc(event.id)}" data-key="${key}"${checks[key] ? " checked" : ""}> ${label}</label></li>`).join("");
-      return `<article class="check-card"><h3>${esc(event.shortName)} ${esc(String(event.edition))}</h3><p>${monday ? `A 16-week block starts ${esc(MR.formatYmdLong(monday))}.` : "Race date not fixed."}</p><ul class="checks">${boxes}</ul><p><a href="${esc(url(`events/${event.id}/`))}">Open the event page</a></p></article>`;
+      const boxes = CHECKS.map(([key, label]) => `<li><label><input type="checkbox" data-action="plan-check" data-id="${esc(event.id)}" data-key="${key}"${checks[key] ? " checked" : ""}> ${esc(t(label))}</label></li>`).join("");
+      return `<article class="check-card"><h3>${esc(event.shortName)} ${esc(String(event.edition))}</h3><p>${monday ? esc(blockStarts(monday)) : esc(t("Race date not fixed."))}</p><ul class="checks">${boxes}</ul><p><a href="${esc(url(`events/${event.id}/`))}">${esc(t("Open the event page"))}</a></p></article>`;
     }).join("");
     return `<div class="wrap">
-      <p class="eyebrow">Plan your race</p>
-      <h1>Your own deadline list.</h1>
-      <p class="lede">Choose the races you are actually chasing. The list stays in this browser. A 16-week block is counted back to the Monday 111 days before race Sunday, or the Sunday before a Monday race.</p>
+      <p class="eyebrow">${esc(t("Plan your race"))}</p>
+      <h1>${esc(t("Your own deadline list."))}</h1>
+      <p class="lede">${esc(t("Choose the races you are actually chasing. The list stays in this browser. A 16-week block is counted back to the Monday 111 days before race Sunday, or the Sunday before a Monday race."))}</p>
       <div class="plan-grid">
         <section class="card" style="padding:8px 16px 16px">
-          <h2>Races</h2>
+          <h2>${esc(t("Races"))}</h2>
           ${choices}
-          <button class="button" type="button" data-action="plan-open">Add races that are open</button>
+          <button class="button" type="button" data-action="plan-open">${esc(t("Add races that are open"))}</button>
         </section>
         <section class="stack">
-          ${selected.length ? `<article class="check-card"><h2>Coming up</h2><ol class="race-list">${merged.map((boundary) => `<li class="race-row"><span class="race-when"><time>${esc(dayYear(boundary.phase === "end" ? boundary.milestone.end : boundary.milestone.at, boundary.event.timeZone))}</time></span><span><strong>${esc(boundary.event.shortName)} ${esc(String(boundary.event.edition))}</strong><em>${esc(MR.boundaryHeading(boundary).title)}</em></span></li>`).join("") || "<li>No dated milestones left.</li>"}</ol></article>${cards}` : `<article class="check-card"><h2>Nothing selected</h2><p>Add a race, or start with the ballots that are open today.</p></article>`}
+          ${selected.length ? `<article class="check-card"><h2>${esc(t("Coming up"))}</h2><ol class="race-list">${merged.map((boundary) => `<li class="race-row"><span class="race-when"><time>${esc(dayYear(boundary.phase === "end" ? boundary.milestone.end : boundary.milestone.at, boundary.event.timeZone))}</time></span><span><strong>${esc(boundary.event.shortName)} ${esc(String(boundary.event.edition))}</strong><em>${esc(t(MR.boundaryHeading(boundary).title))}</em></span></li>`).join("") || `<li>${esc(t("No dated milestones left."))}</li>`}</ol></article>${cards}` : `<article class="check-card"><h2>${esc(t("Nothing selected"))}</h2><p>${esc(t("Add a race, or start with the ballots that are open today."))}</p></article>`}
         </section>
       </div>
     </div>`;
@@ -402,76 +426,77 @@
 
   function renderAbout() {
     return `<div class="wrap prose">
-      <p class="eyebrow">About</p>
-      <h1>A calendar you can keep, and a feed other apps can read.</h1>
-      <p>Marathon Race tracks the dates that decide whether you are on the start line: ballot open, ballot close, result, payment, expo, and race day. It began as a personal deadline list for the World Marathon Majors. The pages are the public view. The JSON is the product underneath.</p>
-      <h2>Use the data</h2>
-      <p>Two files, both generated from the same source. <a href="${esc(url("data/events.json"))}">events.json</a> is nested by race. <a href="${esc(url("data/milestones.json"))}">milestones.json</a> is one row per date, already sorted, which is the file to filter. Schema version ${esc(String(state.data.schemaVersion))}. Fields are not renamed or removed without a version bump.</p>
+      <p class="eyebrow">${esc(t("About"))}</p>
+      <h1>${esc(t("A calendar you can keep, and a feed other apps can read."))}</h1>
+      <p>${esc(t("Marathon Race tracks the dates that decide whether you are on the start line: ballot open, ballot close, result, payment, expo, and race day. It began as a personal deadline list for the World Marathon Majors. The pages are the public view. The JSON is the product underneath."))}</p>
+      <h2>${esc(t("Use the data"))}</h2>
+      <p>${esc(t("Two files, both generated from the same source."))} <a href="${esc(url("data/events.json"))}">events.json</a> ${esc(t("is nested by race."))} <a href="${esc(url("data/milestones.json"))}">milestones.json</a> ${esc(t("is one row per date, already sorted, which is the file to filter. Schema version"))} ${esc(String(state.data.schemaVersion))}. ${esc(t("Fields are not renamed or removed without a version bump."))}</p>
       <ul>
-        <li><code>at</code> is an ISO-8601 instant with a numeric offset. Sort and count down with <code>Date.parse</code>. Do not sort the strings.</li>
-        <li><code>date</code> is the civil date of that instant in the race city's time zone. Use it for an all-day cell.</li>
-        <li><code>precision</code> is <code>instant</code>, <code>day</code>, or <code>tbc</code>. Hide the clock when it is not <code>instant</code>.</li>
-        <li><code>confidence</code> is <code>official</code>, <code>reported</code>, or <code>expected</code>. Expected rows have null dates on purpose.</li>
-        <li>Ballot close is its own milestone. It is not the <code>end</code> of ballot open. <code>end</code> is only for a range that belongs to one milestone, such as an expo.</li>
+        <li><code>at</code> ${esc(t("is an ISO-8601 instant with a numeric offset. Sort and count down with"))} <code>Date.parse</code>. ${esc(t("Do not sort the strings."))}</li>
+        <li><code>date</code> ${esc(t("is the civil date of that instant in the race city's time zone. Use it for an all-day cell."))}</li>
+        <li><code>precision</code> ${esc(t("is"))} <code>instant</code>, <code>day</code>, ${esc(t("or"))} <code>tbc</code>. ${state.lang === "zh-Hant" ? `${esc(t("Hide the clock when it is not"))} <code>instant</code> ${esc(t("instant."))}` : "Hide the clock when it is not <code>instant</code>."}</li>
+        <li><code>confidence</code> ${esc(t("is"))} <code>official</code>, <code>reported</code>, ${esc(t("or"))} <code>expected</code>. ${esc(t("Expected rows have null dates on purpose."))}</li>
+        <li>${esc(t("Ballot close is its own milestone. It is not the"))} <code>end</code> ${esc(t("of ballot open."))} <code>end</code> ${esc(t("is only for a range that belongs to one milestone, such as an expo."))}</li>
       </ul>
-      <p>GitHub Pages does not add CORS headers. A server can fetch the Pages URL. A browser app on another site should use jsDelivr, which does:</p>
+      <p>${esc(t("GitHub Pages does not add CORS headers. A server can fetch the Pages URL. A browser app on another site should use jsDelivr, which does:"))}</p>
       <pre>const url = "https://cdn.jsdelivr.net/gh/kelvinccho/marathon-race@main/data/milestones.json";
 const data = await fetch(url).then((response) => response.json());
 const next = data.milestones
   .filter((row) => row.at && Date.parse(row.at) > Date.now())
   .sort((a, b) => Date.parse(a.at) - Date.parse(b.at))[0];</pre>
-      <p>The same dates are also in <a href="${esc(url("calendar.ics"))}">calendar.ics</a>.</p>
-      <h2>How a date is labelled</h2>
-      <p>Official means the organiser's own page states it. Reported means a published account of that page, kept because the organiser's wording was not captured directly. Expected means it is not published: the file stores null, and the note says why. Nothing here is a guess dressed up as a clock time.</p>
-      <p>On the calendar, each race has one pale colour. The mark gets darker as the date matters more: a ballot is the lightest fill, a result is a dark circle with only a border, an expo is dark, and race day is the darkest. The hex values in <code>milestoneTypes</code> stay the feed's type key.</p>
-      <h2>What this is not</h2>
-      <p>Not an entry agent, not a charity broker, and not affiliated with Abbott World Marathon Majors, NYRR, the B.A.A., London Marathon Events, or any other organiser. Confirm the live entry page before you pay or book flights.</p>
-      <h2>What comes next</h2>
-      <p>Email alerts, once the site has its own domain. Until then, subscribe to the calendar file or poll the JSON. The plan page is the personal layer: it stays on this device.</p>
+      <p>${esc(t("The same dates are also in"))} <a href="${esc(url("calendar.ics"))}">calendar.ics</a>.</p>
+      <h2>${esc(t("How a date is labelled"))}</h2>
+      <p>${esc(t("Official means the organiser's own page states it. Reported means a published account of that page, kept because the organiser's wording was not captured directly. Expected means it is not published: the file stores null, and the note says why. Nothing here is a guess dressed up as a clock time."))}</p>
+      <p>${esc(t("On the calendar, each race has one pale colour. The mark gets darker as the date matters more: a ballot is the lightest fill, a result is a dark circle with only a border, an expo is dark, and race day is the darkest. The hex values in"))} <code>milestoneTypes</code> ${esc(t("stay the feed's type key."))}</p>
+      <p>${esc(t("The pages can be read in English or Traditional Chinese. Event names stay as the organiser publishes them. The JSON file stays in English."))}</p>
+      <h2>${esc(t("What this is not"))}</h2>
+      <p>${esc(t("Not an entry agent, not a charity broker, and not affiliated with Abbott World Marathon Majors, NYRR, the B.A.A., London Marathon Events, or any other organiser. Confirm the live entry page before you pay or book flights."))}</p>
+      <h2>${esc(t("What comes next"))}</h2>
+      <p>${esc(t("Email alerts, once the site has its own domain. Until then, subscribe to the calendar file or poll the JSON. The plan page is the personal layer: it stays on this device."))}</p>
     </div>`;
   }
 
   function renderAlerts() {
-    const events = state.data.events.slice().sort((a, b) => a.order - b.order);
+    const events = view().events.slice().sort((a, b) => a.order - b.order);
     const eventBoxes = events.map((event) => {
       const on = state.alerts.allEvents || state.alerts.eventIds.includes(event.id);
       return `<label class="choice"><input type="checkbox" name="event" value="${esc(event.id)}"${on ? " checked" : ""}> <span>${esc(event.shortName)} ${esc(String(event.edition))}</span></label>`;
     }).join("");
-    const typeBoxes = state.data.milestoneTypes.map((type) => {
+    const typeBoxes = view().milestoneTypes.map((type) => {
       const on = state.alerts.types.includes(type.id);
       return `<label class="choice"><input type="checkbox" name="type" value="${esc(type.id)}"${on ? " checked" : ""}> <span>${esc(type.label)}</span></label>`;
     }).join("");
     const pagesIcs = "https://kelvinccho.github.io/marathon-race/calendar.ics";
     return `<div class="wrap">
-      <p class="eyebrow">Get alerts</p>
-      <h1>A calendar you can subscribe to today.</h1>
-      <p class="lede">Email delivery waits for the site's own domain. The dates already work in Google Calendar and Apple Calendar, and any app that can read the JSON.</p>
-      ${state.alertSaved ? `<p class="saved">Saved in this browser. Nothing was emailed.</p>` : ""}
-      ${state.alertError ? `<p class="saved">${esc(state.alertError)}</p>` : ""}
+      <p class="eyebrow">${esc(t("Get alerts"))}</p>
+      <h1>${esc(t("A calendar you can subscribe to today."))}</h1>
+      <p class="lede">${esc(t("Email delivery waits for the site's own domain. The dates already work in Google Calendar and Apple Calendar, and any app that can read the JSON."))}</p>
+      ${state.alertSaved ? `<p class="saved">${esc(t("Saved in this browser. Nothing was emailed."))}</p>` : ""}
+      ${state.alertError ? `<p class="saved">${esc(t(state.alertError))}</p>` : ""}
       <form class="alert-grid" data-alert-form>
         <section class="card" style="padding:8px 16px 16px">
-          <h2>Races</h2>
+          <h2>${esc(t("Races"))}</h2>
           ${eventBoxes}
-          <h2>Dates</h2>
+          <h2>${esc(t("Dates"))}</h2>
           ${typeBoxes}
         </section>
         <section class="stack">
           <article class="check-card">
-            <h2>Save a reminder list</h2>
-            <label class="field">Email <input type="email" name="email" value="${esc(state.alerts.email || "")}" placeholder="you@example.com" autocomplete="email"></label>
-            <p class="fine">Stored only in this browser. It is not sent anywhere.</p>
+            <h2>${esc(t("Save a reminder list"))}</h2>
+            <label class="field">${esc(t("Email"))} <input type="email" name="email" value="${esc(state.alerts.email || "")}" placeholder="you@example.com" autocomplete="email"></label>
+            <p class="fine">${esc(t("Stored only in this browser. It is not sent anywhere."))}</p>
             <div class="actions">
-              <button class="button" type="submit">Save in this browser</button>
-              <button class="button-ghost" type="button" data-action="alert-download">Download .ics</button>
-              <button class="button-ghost" type="button" data-action="alert-plan">Use my plan</button>
+              <button class="button" type="submit">${esc(t("Save in this browser"))}</button>
+              <button class="button-ghost" type="button" data-action="alert-download">${esc(t("Download .ics"))}</button>
+              <button class="button-ghost" type="button" data-action="alert-plan">${esc(t("Use my plan"))}</button>
             </div>
           </article>
           <article class="check-card">
-            <h2>Subscribe</h2>
-            <p>In Google Calendar: Add calendar → From URL. Paste the feed. Apple Calendar can open the same file.</p>
+            <h2>${esc(t("Subscribe"))}</h2>
+            <p>${esc(t("In Google Calendar: Add calendar → From URL. Paste the feed. Apple Calendar can open the same file."))}</p>
             <p><code>${pagesIcs}</code></p>
-            <button class="button-ghost" type="button" data-action="copy" data-copy="${pagesIcs}">Copy feed URL</button>
-            <p class="fine">The feed is rebuilt from <a href="${esc(url("data/events.json"))}">events.json</a>. Poll <a href="${esc(url("data/milestones.json"))}">milestones.json</a> if you would rather send your own alerts.</p>
+            <button class="button-ghost" type="button" data-action="copy" data-copy="${pagesIcs}">${esc(t("Copy feed URL"))}</button>
+            <p class="fine">${esc(t("The feed is rebuilt from"))} <a href="${esc(url("data/events.json"))}">events.json</a>. ${esc(t("Poll"))} <a href="${esc(url("data/milestones.json"))}">milestones.json</a> ${esc(t("if you would rather send your own alerts."))}</p>
           </article>
         </section>
       </form>
@@ -520,6 +545,11 @@ const next = data.milestones
       else state.types.push(type);
       saveView();
       keepScroll(render);
+    } else if (action === "lang") {
+      state.lang = target.dataset.lang === "zh-Hant" ? "zh-Hant" : "en";
+      localStorage.setItem("marathon-race-lang", state.lang);
+      MR.setLocale(langTag());
+      render();
     } else if (action === "plan-add") {
       togglePlan(target.dataset.id);
       keepScroll(render);
@@ -530,7 +560,7 @@ const next = data.milestones
       savePlan();
       keepScroll(render);
     } else if (action === "download-event") {
-      download(`${target.dataset.id}.ics`, MR.buildIcs(state.data, { eventIds: [target.dataset.id] }));
+      download(`${target.dataset.id}.ics`, MR.buildIcs(view(), { eventIds: [target.dataset.id] }));
     } else if (action === "alert-download") {
       downloadAlerts();
     } else if (action === "alert-plan") {
@@ -540,9 +570,9 @@ const next = data.milestones
       keepScroll(render);
     } else if (action === "copy") {
       navigator.clipboard.writeText(target.dataset.copy).then(() => {
-        target.textContent = "Copied";
+        target.textContent = t("Copied");
       }).catch(() => {
-        target.textContent = "Copy failed";
+        target.textContent = t("Copy failed");
       });
     }
   }
@@ -591,7 +621,7 @@ const next = data.milestones
       keepScroll(render);
       return;
     }
-    download("marathon-race.ics", MR.buildIcs(state.data, { eventIds: alerts.eventIds, types: alerts.types }));
+    download("marathon-race.ics", MR.buildIcs(view(), { eventIds: alerts.eventIds, types: alerts.types }));
   }
 
   function tick() {
@@ -607,11 +637,11 @@ const next = data.milestones
   }
 
   function paintClock() {
-    const viewer = new Intl.DateTimeFormat("en-GB", {
+    const viewer = new Intl.DateTimeFormat(langTag(), {
       weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZoneName: "short",
     }).format(state.now);
     document.querySelectorAll("[data-viewer-now]").forEach((node) => {
-      node.textContent = `Your time · ${viewer}`;
+      node.textContent = `${t("Your time")} · ${viewer}`;
     });
     document.querySelectorAll("[data-clock-at]").forEach((clock) => {
       const left = MR.splitRemaining(Number(clock.dataset.clockAt) - state.now);
@@ -624,7 +654,10 @@ const next = data.milestones
     const clock = document.querySelector("[data-clock-at]");
     if (live && clock) {
       const left = MR.splitRemaining(Number(clock.dataset.clockAt) - state.now);
-      const text = `${left.days} days, ${left.hours} hours, ${left.minutes} minutes`;
+      const units = clockUnits();
+      const text = state.lang === "zh-Hant"
+        ? `${left.days} ${units[0]} ${left.hours} ${units[1]} ${left.minutes} ${units[2]}`
+        : `${left.days} days, ${left.hours} hours, ${left.minutes} minutes`;
       if (live.dataset.text !== text) {
         live.dataset.text = text;
         live.textContent = text;
@@ -652,7 +685,7 @@ const next = data.milestones
   function stageText(event, stage) {
     const milestones = stage.milestones && stage.milestones.length ? stage.milestones : [stage.milestone].filter(Boolean);
     const dated = milestones.filter((milestone) => milestone.at);
-    if (!dated.length) return "Not announced";
+    if (!dated.length) return t("Not announced");
     return dated.map((milestone) => {
       if (milestone.end && milestone.endDate && milestone.endDate !== milestone.date) return compactRange(milestone.at, milestone.end, event.timeZone);
       return dayYear(milestone.at, event.timeZone);
@@ -660,7 +693,7 @@ const next = data.milestones
   }
 
   function dateParts(iso, timeZone) {
-    const parts = new Intl.DateTimeFormat("en-GB", {
+    const parts = new Intl.DateTimeFormat(langTag(), {
       timeZone, day: "numeric", month: "short", year: "numeric",
     }).formatToParts(new Date(iso));
     const pick = (type) => parts.find((part) => part.type === type).value;
@@ -668,11 +701,21 @@ const next = data.milestones
   }
 
   function dayYear(iso, timeZone) {
+    if (state.lang === "zh-Hant") {
+      return new Intl.DateTimeFormat("zh-Hant", {
+        timeZone, day: "numeric", month: "long", year: "numeric",
+      }).format(new Date(iso));
+    }
     const part = dateParts(iso, timeZone);
     return `${part.day} ${part.month} ${part.year}`;
   }
 
   function compactRange(startIso, endIso, timeZone) {
+    if (state.lang === "zh-Hant") {
+      return new Intl.DateTimeFormat("zh-Hant", {
+        timeZone, day: "numeric", month: "long", year: "numeric",
+      }).formatRange(new Date(startIso), new Date(endIso));
+    }
     const start = dateParts(startIso, timeZone);
     const end = dateParts(endIso, timeZone);
     if (start.year === end.year && start.month === end.month) return `${start.day}–${end.day} ${start.month} ${start.year}`;
@@ -692,7 +735,7 @@ const next = data.milestones
   }
 
   function milestoneWhen(event, milestone) {
-    if (!milestone.at) return "Not announced";
+    if (!milestone.at) return t("Not announced");
     const start = MR.formatWhen(milestone.at, event.timeZone, milestone.precision);
     if (!milestone.end) return start;
     const endPrecision = milestone.precision === "day" ? "day" : "instant";
@@ -714,13 +757,33 @@ const next = data.milestones
   }
 
   function raceRange(event) {
-    if (event.raceEndDate && event.raceEndDate !== event.raceDate) return `${event.raceDate} to ${event.raceEndDate}`;
+    if (event.raceEndDate && event.raceEndDate !== event.raceDate) {
+      return state.lang === "zh-Hant" ? `${event.raceDate} 至 ${event.raceEndDate}` : `${event.raceDate} to ${event.raceEndDate}`;
+    }
     return event.raceDate;
   }
 
   function currentEvent() {
     const id = document.documentElement.dataset.event;
-    return id ? state.data.events.find((event) => event.id === id) : null;
+    return id ? view().events.find((event) => event.id === id) : null;
+  }
+
+  function blockStarts(ymd) {
+    const date = MR.formatYmdLong(ymd);
+    return state.lang === "zh-Hant" ? `自${date}開始。` : `Starts ${date}.`;
+  }
+
+  function clockUnits() {
+    return [t("Days"), t("Hours"), t("Minutes"), t("Seconds")];
+  }
+
+  function ensureCjkFont() {
+    if (state.lang !== "zh-Hant" || document.getElementById("cjk-font")) return;
+    const link = document.createElement("link");
+    link.id = "cjk-font";
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600&display=swap";
+    document.head.appendChild(link);
   }
 
   function togglePlan(id) {
@@ -734,7 +797,7 @@ const next = data.milestones
   }
 
   function scopedEvents() {
-    return MR.filterEvents(state.data.events, { ids: state.races, types: state.types });
+    return MR.filterEvents(view().events, { ids: state.races, types: state.types });
   }
 
   function visibleStages(event) {
@@ -746,7 +809,7 @@ const next = data.milestones
   }
 
   function clockEvents() {
-    return document.documentElement.dataset.page === "home" ? scopedEvents() : state.data.events;
+    return document.documentElement.dataset.page === "home" ? scopedEvents() : view().events;
   }
 
   function loadView() {
@@ -762,18 +825,18 @@ const next = data.milestones
   }
 
   function raceFilters() {
-    const events = state.data.events.slice().sort((a, b) => a.order - b.order);
-    const buttons = [`<button class="text-button" type="button" data-action="race-filter" data-id="all" aria-pressed="${state.races.length === 0}">All races</button>`]
+    const events = view().events.slice().sort((a, b) => a.order - b.order);
+    const buttons = [`<button class="text-button" type="button" data-action="race-filter" data-id="all" aria-pressed="${state.races.length === 0}">${esc(t("All races"))}</button>`]
       .concat(events.map((event) => `<button class="text-button" type="button" data-action="race-filter" data-id="${esc(event.id)}" aria-pressed="${state.races.includes(event.id)}"><i style="--swatch:${esc(MR.raceColor(event.id))}" aria-hidden="true"></i>${esc(flag(event))} ${esc(event.shortName)} ${esc(String(event.edition))}</button>`))
       .join("");
-    return `<div class="filter-group"><p class="filter-label" id="race-filter-label">Races</p><div class="filters" role="group" aria-labelledby="race-filter-label">${buttons}</div></div>`;
+    return `<div class="filter-group"><p class="filter-label" id="race-filter-label">${esc(t("Races"))}</p><div class="filters" role="group" aria-labelledby="race-filter-label">${buttons}</div></div>`;
   }
 
   function milestoneFilters() {
-    const buttons = [`<button class="text-button" type="button" data-action="type-filter" data-type="all" aria-pressed="${state.types.length === 0}">All milestones</button>`]
-      .concat(state.data.milestoneTypes.map((type) => `<button class="text-button" type="button" data-action="type-filter" data-type="${esc(type.id)}" aria-pressed="${state.types.includes(type.id)}"><i class="sample importance-${esc(MR.importanceOf(type.id))}" aria-hidden="true"></i>${esc(type.label)}</button>`))
+    const buttons = [`<button class="text-button" type="button" data-action="type-filter" data-type="all" aria-pressed="${state.types.length === 0}">${esc(t("All milestones"))}</button>`]
+      .concat(view().milestoneTypes.map((type) => `<button class="text-button" type="button" data-action="type-filter" data-type="${esc(type.id)}" aria-pressed="${state.types.includes(type.id)}"><i class="sample importance-${esc(MR.importanceOf(type.id))}" aria-hidden="true"></i>${esc(type.label)}</button>`))
       .join("");
-    return `<div class="filter-group"><p class="filter-label" id="milestone-filter-label">Milestones</p><div class="filters" role="group" aria-labelledby="milestone-filter-label">${buttons}</div></div>`;
+    return `<div class="filter-group"><p class="filter-label" id="milestone-filter-label">${esc(t("Milestones"))}</p><div class="filters" role="group" aria-labelledby="milestone-filter-label">${buttons}</div></div>`;
   }
 
   function legendItem(importance, label) {
@@ -799,7 +862,8 @@ const next = data.milestones
   }
 
   function checkedLabel() {
-    return MR.formatYmdLong(state.data.checked).replace(/^[^,]+, /, "");
+    const formatted = MR.formatYmdLong(state.data.checked);
+    return state.lang === "zh-Hant" ? formatted : formatted.replace(/^[^,]+, /, "");
   }
 
   function flag(event) {

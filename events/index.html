@@ -17,9 +17,19 @@
   
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><p>The live countdown needs JavaScript. The same dates are in <a href="../data/events.json">events.json</a> and <a href="../data/milestones.json">milestones.json</a>.</p><ul><li><a href="../events/nyc-2026/">NYC 2026</a> — 2026-11-01</li><li><a href="../events/tokyo-2027/">Tokyo 2027</a> — 2027-03-07</li><li><a href="../events/boston-2027/">Boston 2027</a> — 2027-04-19</li><li><a href="../events/london-2027/">London 2027</a> — 2027-04-24</li><li><a href="../events/cape-town-2027/">Cape Town 2027</a> — 2027-05-23</li><li><a href="../events/sydney-2027/">Sydney 2027</a> — 2027-08-29</li><li><a href="../events/berlin-2027/">Berlin 2027</a> — 2027-09-26</li><li><a href="../events/chicago-2027/">Chicago 2027</a> — 2027-10-10</li><li><a href="../events/nyc-2027/">NYC 2027</a> — 2027-11-07</li><li><a href="../events/shanghai-2026/">Shanghai 2026</a> — 2026-12-06</li></ul></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><p lang="en">The live countdown needs JavaScript. The same dates are in <a href="../data/events.json">events.json</a> and <a href="../data/milestones.json">milestones.json</a>.</p><p lang="zh-Hant">即時倒數需要 JavaScript。同一批日期在 <a href="../data/events.json">events.json</a> 與 <a href="../data/milestones.json">milestones.json</a>。</p><ul><li><a href="../events/nyc-2026/">NYC 2026</a> — 2026-11-01</li><li><a href="../events/tokyo-2027/">Tokyo 2027</a> — 2027-03-07</li><li><a href="../events/boston-2027/">Boston 2027</a> — 2027-04-19</li><li><a href="../events/london-2027/">London 2027</a> — 2027-04-24</li><li><a href="../events/cape-town-2027/">Cape Town 2027</a> — 2027-05-23</li><li><a href="../events/sydney-2027/">Sydney 2027</a> — 2027-08-29</li><li><a href="../events/berlin-2027/">Berlin 2027</a> — 2027-09-26</li><li><a href="../events/chicago-2027/">Chicago 2027</a> — 2027-10-10</li><li><a href="../events/nyc-2027/">NYC 2027</a> — 2027-11-07</li><li><a href="../events/shanghai-2026/">Shanghai 2026</a> — 2026-12-06</li></ul></noscript>
   <script src="../assets/js/logic.js"></script>
+  <script src="../assets/js/i18n.js"></script>
   <script src="../assets/js/site.js"></script>
 </body>
 </html>

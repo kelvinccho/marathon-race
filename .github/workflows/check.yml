@@ -13,3 +13,6 @@ jobs:
       - run: node scripts/check.mjs
       - run: node scripts/build.mjs
       - run: git diff --exit-code
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm test

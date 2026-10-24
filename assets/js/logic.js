@@ -146,7 +146,7 @@
         consumed.add(close.id);
         const word = milestone.type === "ballot_open"
           ? event.entryNoun
-          : milestone.label.replace(/ opens$/i, "");
+          : milestone.label.replace(/ opens$/i, "").replace(/開始$/, "");
         items.push({
           kind: "span",
           swatch: milestone.type === "ballot_open" ? "ballot" : "qualifier",
@@ -180,13 +180,20 @@
     return items;
   }
 
+  let formatLocale = "en-GB";
+
+  function setLocale(locale) {
+    formatLocale = locale === "zh-Hant" ? "zh-Hant" : "en-GB";
+  }
+
   function shortType(milestone) {
-    if (milestone.type === "result") return "result";
-    if (milestone.type === "payment") return "pay";
-    if (milestone.type === "expo") return "expo";
-    if (milestone.type === "race") return "race";
-    if (milestone.type === "ballot_close" || milestone.type === "qualifier_close") return "closes";
-    if (milestone.type === "ballot_open" || milestone.type === "qualifier_open") return "opens";
+    const zh = formatLocale === "zh-Hant";
+    if (milestone.type === "result") return zh ? "結果" : "result";
+    if (milestone.type === "payment") return zh ? "繳費" : "pay";
+    if (milestone.type === "expo") return zh ? "博覽會" : "expo";
+    if (milestone.type === "race") return zh ? "比賽" : "race";
+    if (milestone.type === "ballot_close" || milestone.type === "qualifier_close") return zh ? "截止" : "closes";
+    if (milestone.type === "ballot_open" || milestone.type === "qualifier_open") return zh ? "開始" : "opens";
     return milestone.label;
   }
 
@@ -387,7 +394,7 @@
   }
 
   function formatDate(iso, timeZone) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat(formatLocale, {
       timeZone,
       weekday: "short",
       day: "numeric",
@@ -397,7 +404,7 @@
   }
 
   function formatDateTime(iso, timeZone) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat(formatLocale, {
       timeZone,
       weekday: "short",
       day: "numeric",
@@ -411,7 +418,7 @@
   }
 
   function formatDayMonth(iso, timeZone) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat(formatLocale, {
       timeZone,
       day: "numeric",
       month: "short",
@@ -419,7 +426,7 @@
   }
 
   function formatMonth(year, month) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat(formatLocale, {
       month: "long",
       year: "numeric",
       timeZone: "UTC",
@@ -427,7 +434,7 @@
   }
 
   function formatYmdLong(ymd) {
-    return new Intl.DateTimeFormat("en-GB", {
+    return new Intl.DateTimeFormat(formatLocale, {
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -437,7 +444,7 @@
   }
 
   function formatWhen(iso, timeZone, precision) {
-    if (!iso) return "Not announced";
+    if (!iso) return formatLocale === "zh-Hant" ? "尚未公布" : "Not announced";
     return precision === "instant" ? formatDateTime(iso, timeZone) : formatDate(iso, timeZone);
   }
 
@@ -472,8 +479,8 @@
       "PRODID:-//Marathon Race//Majors Calendar//EN",
       "CALSCALE:GREGORIAN",
       "METHOD:PUBLISH",
-      "X-WR-CALNAME:Marathon Race",
-      "X-WR-CALDESC:Ballot, result, payment, expo, and race day",
+      formatLocale === "zh-Hant" ? "X-WR-CALNAME:馬拉松賽事" : "X-WR-CALNAME:Marathon Race",
+      formatLocale === "zh-Hant" ? "X-WR-CALDESC:抽籤、結果、繳費、博覽會與比賽日" : "X-WR-CALDESC:Ballot, result, payment, expo, and race day",
     ];
     data.events.forEach((event) => {
       if (eventIds && !eventIds.has(event.id)) return;
@@ -491,7 +498,8 @@
   function eventLines(event, milestone, stamp, closing) {
     const uid = `${event.id}-${milestone.id}${closing ? "-end" : ""}@marathon-race`;
     const summary = `${event.shortName} ${event.edition} · ${closing ? (milestone.endLabel || milestone.label) : milestone.label}`;
-    const description = `${milestone.note} ${event.entryUrl || event.officialUrl} Confirm on the official site before you act.`;
+    const caution = formatLocale === "zh-Hant" ? "行動前請向官方網站確認。" : "Confirm on the official site before you act.";
+    const description = `${milestone.note} ${event.entryUrl || event.officialUrl} ${caution}`;
     const rows = [
       "BEGIN:VEVENT",
       `UID:${uid}`,
@@ -579,6 +587,7 @@
 
   return {
     MILESTONE_TYPES,
+    setLocale,
     swatchFor,
     ymdInZone,
     addDays,

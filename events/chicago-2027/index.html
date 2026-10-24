@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"Bank of America Chicago Marathon 2027","startDate":"2027-10-10","endDate":"2027-10-10","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Chicago","address":{"@type":"PostalAddress","addressLocality":"Chicago","addressCountry":"US"}},"url":"https://www.chicagomarathon.com/","description":"Guaranteed and non-guaranteed applications opened at 08:00 Central on 8 October 2026 and close at 14:00 Central on 29 October 2026. It is not first come, first served. Guaranteed applicants must pay by 23:59 Central on 10 November. Drawing results are emailed on 8 December, and drawn runners must pay by 23:59 Central on 15 December."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>Bank of America Chicago Marathon 2027</h1><p>Guaranteed and non-guaranteed applications opened at 08:00 Central on 8 October 2026 and close at 14:00 Central on 29 October 2026. It is not first come, first served. Guaranteed applicants must pay by 23:59 Central on 10 November. Drawing results are emailed on 8 December, and drawn runners must pay by 23:59 Central on 15 December.</p><ul><li><strong>Applications open</strong> — 2026-10-08</li><li><strong>Applications close</strong> — 2026-10-29</li><li><strong>Guaranteed entry payment</strong> — 2026-11-10</li><li><strong>Drawing results</strong> — 2026-12-08</li><li><strong>Drawing payment</strong> — 2026-12-15</li><li><strong>Expo</strong> — 2027-10-07 to 2027-10-09</li><li><strong>Race day</strong> — 2027-10-10</li></ul><p><a href="https://www.chicagomarathon.com/">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>Bank of America Chicago Marathon 2027</h1><p>Guaranteed and non-guaranteed applications opened at 08:00 Central on 8 October 2026 and close at 14:00 Central on 29 October 2026. It is not first come, first served. Guaranteed applicants must pay by 23:59 Central on 10 November. Drawing results are emailed on 8 December, and drawn runners must pay by 23:59 Central on 15 December.</p><ul><li><strong>Applications open</strong> — 2026-10-08</li><li><strong>Applications close</strong> — 2026-10-29</li><li><strong>Guaranteed entry payment</strong> — 2026-11-10</li><li><strong>Drawing results</strong> — 2026-12-08</li><li><strong>Drawing payment</strong> — 2026-12-15</li><li><strong>Expo</strong> — 2027-10-07 to 2027-10-09</li><li><strong>Race day</strong> — 2027-10-10</li></ul><p><a href="https://www.chicagomarathon.com/">Official site</a></p></article><article lang="zh-Hant"><h1>Bank of America Chicago Marathon 2027</h1><p>保證與非保證申請於美國中部時間 2026 年 10 月 8 日 08:00 開放，10 月 29 日 14:00 截止。不是先到先得。保證名額的申請者須於中部時間 11 月 10 日 23:59 前繳費。抽籤結果於 12 月 8 日以電子郵件寄出，抽中的跑者須於中部時間 12 月 15 日 23:59 前繳費。</p><ul><li><strong>申請開始</strong> — 2026-10-08</li><li><strong>申請截止</strong> — 2026-10-29</li><li><strong>保證名額繳費</strong> — 2026-11-10</li><li><strong>抽籤結果</strong> — 2026-12-08</li><li><strong>抽籤繳費</strong> — 2026-12-15</li><li><strong>博覽會</strong> — 2027-10-07 至 2027-10-09</li><li><strong>比賽日</strong> — 2027-10-10</li></ul><p><a href="https://www.chicagomarathon.com/">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

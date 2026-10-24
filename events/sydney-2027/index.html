@@ -17,9 +17,19 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"SportsEvent","name":"TCS Sydney Marathon 2027","startDate":"2027-08-29","endDate":"2027-08-29","eventAttendanceMode":"https://schema.org/OfflineEventAttendanceMode","eventStatus":"https://schema.org/EventScheduled","location":{"@type":"Place","name":"Sydney","address":{"@type":"PostalAddress","addressLocality":"Sydney","addressCountry":"AU"}},"url":"https://www.sydneymarathon.com/","description":"The 2027 public ballot ran from 29 September to 10:00 Sydney time on 19 October 2026. Results are due on 3 November 2026, and the fee is charged if you are drawn. Charity places and travel packages are the other routes."}</script>
 </head>
 <body>
-  <div id="app"><p class="loading">Loading the calendar…</p></div>
-  <noscript><article><h1>TCS Sydney Marathon 2027</h1><p>The 2027 public ballot ran from 29 September to 10:00 Sydney time on 19 October 2026. Results are due on 3 November 2026, and the fee is charged if you are drawn. Charity places and travel packages are the other routes.</p><ul><li><strong>Ballot opens</strong> — 2026-09-29</li><li><strong>Ballot closes</strong> — 2026-10-19</li><li><strong>Ballot results</strong> — 2026-11-03</li><li><strong>Fee charged if drawn</strong> — 2026-11-03</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-08-29</li></ul><p><a href="https://www.sydneymarathon.com/">Official site</a></p></article></noscript>
+  <div id="app"><p class="loading" id="loading">Loading the calendar…</p></div>
+  <script>
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        var loading = document.getElementById("loading");
+        if (loading) loading.textContent = "行事曆載入中…";
+      }
+    } catch (error) {}
+  </script>
+  <noscript><article lang="en"><h1>TCS Sydney Marathon 2027</h1><p>The 2027 public ballot ran from 29 September to 10:00 Sydney time on 19 October 2026. Results are due on 3 November 2026, and the fee is charged if you are drawn. Charity places and travel packages are the other routes.</p><ul><li><strong>Ballot opens</strong> — 2026-09-29</li><li><strong>Ballot closes</strong> — 2026-10-19</li><li><strong>Ballot results</strong> — 2026-11-03</li><li><strong>Fee charged if drawn</strong> — 2026-11-03</li><li><strong>Expo</strong> — Not announced</li><li><strong>Race day</strong> — 2027-08-29</li></ul><p><a href="https://www.sydneymarathon.com/">Official site</a></p></article><article lang="zh-Hant"><h1>TCS Sydney Marathon 2027</h1><p>2027 年公開抽籤自 2026 年 9 月 29 日至雪梨時間 10 月 19 日 10:00。結果預定 2026 年 11 月 3 日公布，抽中就扣款。慈善名額與旅行套裝是另外的途徑。</p><ul><li><strong>抽籤開始</strong> — 2026-09-29</li><li><strong>抽籤截止</strong> — 2026-10-19</li><li><strong>抽籤結果</strong> — 2026-11-03</li><li><strong>抽中即扣款</strong> — 2026-11-03</li><li><strong>博覽會</strong> — 尚未公布</li><li><strong>比賽日</strong> — 2027-08-29</li></ul><p><a href="https://www.sydneymarathon.com/">官方網站</a></p></article></noscript>
   <script src="../../assets/js/logic.js"></script>
+  <script src="../../assets/js/i18n.js"></script>
   <script src="../../assets/js/site.js"></script>
 </body>
 </html>

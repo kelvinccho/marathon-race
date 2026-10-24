@@ -16,9 +16,18 @@
 <body>
   <main class="wrap page-miss">
     <p class="eyebrow">404</p>
-    <h1>That page is not on the calendar.</h1>
+    <h1 id="miss">That page is not on the calendar.</h1>
     <p><a id="home" href="/">Back to the calendar</a></p>
   </main>
-  <script>document.getElementById("home").href = window.MR_BASE + "/";</script>
+  <script>
+    document.getElementById("home").href = window.MR_BASE + "/";
+    try {
+      if (localStorage.getItem("marathon-race-lang") === "zh-Hant") {
+        document.documentElement.lang = "zh-Hant";
+        document.getElementById("miss").textContent = "行事曆上沒有這一頁。";
+        document.getElementById("home").textContent = "回到行事曆";
+      }
+    } catch (error) {}
+  </script>
 </body>
 </html>
