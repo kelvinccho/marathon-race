@@ -16,6 +16,8 @@
     month: 10,
     selected: "",
     filter: "all",
+    races: [],
+    types: [],
     plan: { ids: [], checks: {} },
     alerts: { email: "", eventIds: [], types: MR.MILESTONE_TYPES.slice() },
     alertSaved: false,
@@ -37,6 +39,7 @@
       state.data = await response.json();
       state.plan = loadJson("marathon-race-plan-v1", state.plan);
       state.alerts = loadJson("marathon-race-alerts-v1", defaultAlerts());
+      loadView();
       initMonth();
       render();
       setInterval(tick, 1000);
@@ -114,14 +117,20 @@
 
   function renderHome() {
     const today = viewerYmd(state.now);
-    const weeks = MR.monthModel(state.data.events, state.year, state.month);
-    const boundary = MR.boundaries(state.data.events, state.now)[0];
-    const after = MR.boundaries(state.data.events, state.now)[1];
-    const opens = MR.openWindows(state.data.events, state.now);
+    const events = scopedEvents();
+    const weeks = MR.monthModel(events, state.year, state.month);
+    const ahead = MR.boundaries(events, state.now);
+    const boundary = ahead[0];
+    const after = ahead[1];
+    const opens = MR.openWindows(events, state.now);
+    const scopeNote = state.races.length || state.types.length
+      ? "Matching the races and milestones selected above."
+      : "In order of the next date on each race.";
     return `<div class="wrap">
       <p class="eyebrow">World Marathon Majors</p>
       <h1>Every date between the ballot and the start.</h1>
-      <p class="lede">Ballot open, ballot close, result, payment, expo, and race day. The clock is the next real instant. The bars sit on the race city's own date.</p>
+      <p class="lede">Ballot open, ballot close, result, payment, expo, and race day. The clock is the next real instant. The bars sit on the race city's own date. Each race keeps one pale colour, and a darker mark means a more important date.</p>
+      <div class="filter-groups">${raceFilters()}${milestoneFilters()}</div>
       <div class="home-grid">
         <section class="card calendar" aria-label="Month calendar">
           <div class="cal-head">
@@ -137,23 +146,21 @@
             ${weeks.map((week) => weekHtml(week, boundary)).join("")}
           </div></div>
           <ul class="legend">
-            <li><i class="swatch-ballot"></i>Ballot window</li>
-            <li><i class="swatch-close"></i>Closes</li>
-            <li><i class="swatch-qualifier"></i>Qualifier</li>
-            <li><i class="swatch-result"></i>Result</li>
-            <li><i class="swatch-payment"></i>Payment</li>
-            <li><i class="swatch-expo"></i>Expo</li>
-            <li><i class="swatch-race"></i>Race day</li>
+            ${legendItem("ballot", "Ballot, lightest")}
+            ${legendItem("result", "Result, border only")}
+            ${legendItem("payment", "Payment")}
+            ${legendItem("expo", "Expo, dark")}
+            ${legendItem("race", "Race day, darkest")}
           </ul>
-          <p class="cal-note">An amber tip is the day that window closes. Today's date is the dark circle.</p>
-          ${dayPanel(state.selected || today)}
+          <p class="cal-note">A darker cap is the day that window closes. Today's date is the filled circle.</p>
+          ${dayPanel(state.selected || today, events)}
         </section>
         <div class="countdown-wrap">${countdownCard(boundary, after, opens)}</div>
       </div>
       <section class="section">
         <div class="section-head"><h2>Upcoming</h2></div>
-        <p class="fine">In order of the next date on each race.</p>
-        <ol class="race-list">${upcomingEvents().map(raceRow).join("")}</ol>
+        <p class="fine">${esc(scopeNote)}</p>
+        <ol class="race-list">${upcomingEvents(events).map(raceRow).join("") || "<li class=\"empty-filter\">Nothing matches this filter.</li>"}</ol>
       </section>
     </div>`;
   }
@@ -167,34 +174,40 @@
     }).join("");
     const bars = week.bars.map((bar) => {
       const next = boundary && (boundary.milestone.id === bar.milestone.id || (bar.close && boundary.milestone.id === bar.close.id)) && boundary.event.id === bar.event.id;
+      const importance = MR.importanceOf(bar.milestone.type);
       const classes = [
         "bar",
-        `swatch-${bar.swatch}`,
+        `importance-${importance}`,
+        `kind-${bar.kind}`,
         bar.continuesBefore ? "continues-before" : "",
         bar.continuesAfter ? "continues-after" : "",
         bar.endsHere ? "ends-here" : "",
         next ? "is-next" : "",
       ].filter(Boolean).join(" ");
-      return `<a class="${classes}" data-swatch="${bar.swatch}" style="--col:${bar.startCol};--span:${bar.endCol - bar.startCol + 1};--lane:${bar.lane + 1}" href="${esc(url(`events/${bar.event.id}/`))}" title="${esc(bar.label)}">${esc(bar.label)}</a>`;
+      return `<a class="${classes}" style="--col:${bar.startCol};--span:${bar.endCol - bar.startCol + 1};--lane:${bar.lane + 1};--race-color:${esc(MR.raceColor(bar.event.id))}" href="${esc(url(`events/${bar.event.id}/`))}" title="${esc(bar.label)}"><span class="bar-label">${esc(bar.label)}</span></a>`;
     }).join("");
     return `<div class="week"><div class="nums">${nums}</div>${bars ? `<div class="lanes">${bars}</div>` : ""}</div>`;
   }
 
-  function dayPanel(ymd) {
-    const items = MR.calendarItems(state.data.events).filter((item) => item.startYmd <= ymd && item.endYmd >= ymd);
+  function dayPanel(ymd, events) {
+    const items = MR.calendarItems(events).filter((item) => item.startYmd <= ymd && item.endYmd >= ymd);
     const rows = items.length ? items.map((item) => {
       let detail = item.label;
       if (item.kind === "span" && ymd === item.endYmd) detail = `${item.event.shortName} · closes`;
       else if (item.kind === "span" && ymd === item.startYmd) detail = `${item.event.shortName} · opens`;
       else if (item.kind === "span") detail = `${item.label} · open`;
-      return `<li><a href="${esc(url(`events/${item.event.id}/`))}">${esc(detail)}</a><span class="fine">${esc(item.event.city)}</span></li>`;
+      const importance = MR.importanceOf(item.milestone.type);
+      return `<li><a href="${esc(url(`events/${item.event.id}/`))}"><i class="dot importance-${importance}" style="--race-color:${esc(MR.raceColor(item.event.id))}"></i>${esc(detail)}</a><span class="fine">${esc(item.event.city)}</span></li>`;
     }).join("") : "<li>Nothing scheduled on this date. Open ballots still show as bars across their window.</li>";
     return `<div class="day-panel"><h3>${esc(MR.formatYmdLong(ymd))}</h3><ul>${rows}</ul></div>`;
   }
 
   function countdownCard(boundary, after, opens) {
     if (!boundary) {
-      return `<section class="countdown"><h2>Nothing dated ahead.</h2><p>New windows land in the JSON when an organiser publishes them.</p></section>`;
+      const filtered = state.races.length || state.types.length;
+      return filtered
+        ? `<section class="countdown"><h2>Nothing in this filter.</h2><p>Choose another race or milestone, or show all of them.</p></section>`
+        : `<section class="countdown"><h2>Nothing dated ahead.</h2><p>New windows land in the JSON when an organiser publishes them.</p></section>`;
     }
     const heading = MR.boundaryHeading(boundary);
     const iso = boundary.phase === "end" ? boundary.milestone.end : boundary.milestone.at;
@@ -202,7 +215,7 @@
     return `<section class="countdown" aria-labelledby="next-heading">
       <p class="viewer-now" data-viewer-now></p>
       <p class="kicker">${esc(heading.kicker)}</p>
-      <p class="milestone-line"><i class="dot swatch-${esc(MR.swatchFor(boundary.milestone.type))}"></i>${esc(heading.title)}</p>
+      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(heading.title)}</p>
       <h2 id="next-heading">${esc(boundary.event.name)}</h2>
       <p class="fine">${esc(String(boundary.event.edition))} · ${esc(boundary.event.city)}</p>
       <div class="clock" data-clock-at="${boundary.t}" role="timer" aria-describedby="countdown-live">
@@ -224,14 +237,15 @@
   }
 
   function raceRow(event) {
+    const source = state.data.events.find((item) => item.id === event.id) || event;
     const next = MR.boundaries([event], state.now)[0];
-    const status = MR.statusOf(event, state.now);
+    const status = MR.statusOf(source, state.now);
     const when = next ? MR.formatDayMonth(next.phase === "end" ? next.milestone.end : next.milestone.at, event.timeZone) : "—";
-    const swatch = next ? MR.swatchFor(next.milestone.type) : "ballot";
+    const importance = next ? MR.importanceOf(next.milestone.type) : "ballot";
     const label = next ? pillLabel(next) : "Date";
     const detail = next ? `${MR.boundaryHeading(next).title} · ${whenLine(next)}` : "Dates not announced";
-    return `<li><a class="race-row" href="${esc(url(`events/${event.id}/`))}">
-      <span class="race-when"><time>${esc(when)}</time><span class="pill swatch-${swatch}">${esc(label)}</span></span>
+    return `<li><a class="race-row" style="--race-color:${esc(MR.raceColor(event.id))}" href="${esc(url(`events/${event.id}/`))}">
+      <span class="race-when"><time>${esc(when)}</time><span class="pill importance-${importance}">${esc(label)}</span></span>
       <span><strong>${esc(flag(event))} ${esc(event.name)} <span>${esc(String(event.edition))}</span></strong><em>${esc(event.city)} · ${esc(detail)}</em></span>
       <span class="status status-${esc(status.key)}">${esc(status.label)}</span>
     </a></li>`;
@@ -247,22 +261,29 @@
       ["candidate", "Candidate"],
     ];
     const events = state.data.events.slice().sort((a, b) => a.order - b.order).filter((event) => {
+      if (state.races.length && !state.races.includes(event.id)) return false;
+      if (state.types.length && !event.milestones.some((milestone) => state.types.includes(milestone.type))) return false;
       if (state.filter === "all") return true;
       return MR.statusOf(event, state.now).key === state.filter;
     });
+    const statusButtons = filters.map(([id, label]) => `<button class="text-button" type="button" data-action="filter" data-filter="${id}" aria-pressed="${state.filter === id}">${label}</button>`).join("");
     return `<div class="wrap">
       <p class="eyebrow">Events</p>
       <h1>The majors, and the candidate.</h1>
       <p class="lede">Eight World Marathon Majors, the New York race still in race week, and Shanghai while it is being assessed. Open a race for the full date list and the official page.</p>
-      <div class="filters">${filters.map(([id, label]) => `<button class="text-button" type="button" data-action="filter" data-filter="${id}" aria-pressed="${state.filter === id}">${label}</button>`).join("")}</div>
+      <div class="filter-groups">
+        <div class="filter-group"><p class="filter-label" id="status-filter-label">Status</p><div class="filters" role="group" aria-labelledby="status-filter-label">${statusButtons}</div></div>
+        ${raceFilters()}
+        ${milestoneFilters()}
+      </div>
       <div class="event-cards">${events.map(eventCard).join("") || "<p>Nothing in this filter.</p>"}</div>
     </div>`;
   }
 
   function eventCard(event) {
     const status = MR.statusOf(event, state.now);
-    const stages = MR.stagesOf(event).map((stage) => `<div><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`).join("");
-    return `<a class="event-card" href="${esc(url(`events/${event.id}/`))}">
+    const stages = visibleStages(event).map((stage) => `<div><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`).join("");
+    return `<a class="event-card" style="--race-color:${esc(MR.raceColor(event.id))}" href="${esc(url(`events/${event.id}/`))}">
       <p class="meta">${esc(flag(event))} ${esc(event.city)} · ${esc(event.seriesStatus === "candidate" ? "Candidate" : "Major")}</p>
       <h2>${esc(event.shortName)} ${esc(String(event.edition))}</h2>
       <span class="status status-${esc(status.key)}">${esc(status.label)}</span>
@@ -278,12 +299,12 @@
     const status = MR.statusOf(event, state.now);
     const planned = state.plan.ids.includes(event.id);
     const stages = MR.stagesOf(event).map((stage) => {
-      const colour = stage.milestone ? `var(--${MR.swatchFor(stage.milestone.type) === "close" ? "close" : MR.swatchFor(stage.milestone.type)})` : "var(--line)";
-      return `<div class="stage" style="--stage:${colour}"><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`;
+      const type = stage.milestone ? stage.milestone.type : "ballot";
+      return `<div class="stage importance-${esc(MR.importanceOf(type))}"><span>${esc(stage.label)}</span><b>${esc(stageText(event, stage))}</b></div>`;
     }).join("");
     const rows = timeline(event);
     const monday = MR.planStartFor(event);
-    return `<div class="wrap">
+    return `<div class="wrap" style="--race-color:${esc(MR.raceColor(event.id))}">
       <p class="eyebrow"><a href="${esc(url("events/"))}">Events</a> · ${esc(event.seriesStatus === "candidate" ? "Candidate" : "World Marathon Major")}</p>
       <div class="hero-row">
         <div>
@@ -326,7 +347,7 @@
   function miniClock(boundary) {
     const heading = MR.boundaryHeading(boundary);
     return `<p class="kicker">This race</p>
-      <p class="milestone-line"><i class="dot swatch-${esc(MR.swatchFor(boundary.milestone.type))}"></i>${esc(heading.title)}</p>
+      <p class="milestone-line"><i class="dot importance-${esc(MR.importanceOf(boundary.milestone.type))}" style="--race-color:${esc(MR.raceColor(boundary.event.id))}"></i>${esc(heading.title)}</p>
       <div class="clock" data-clock-at="${boundary.t}"><div><b data-dd>00</b><span>Days</span></div><div><b data-hh>00</b><span>Hours</span></div><div><b data-mm>00</b><span>Minutes</span></div><div><b data-ss>00</b><span>Seconds</span></div></div>
       <p>${esc(whenLine(boundary))}</p>`;
   }
@@ -336,10 +357,9 @@
     return event.milestones.map((milestone) => {
       const past = milestone.end ? Date.parse(milestone.end) < state.now : (milestone.at && Date.parse(milestone.at) < state.now);
       const current = next && next.milestone.id === milestone.id;
-      const swatch = MR.swatchFor(milestone.type);
       const when = milestoneWhen(event, milestone);
       return `<li class="${past ? "is-past" : ""}">
-        <span class="mark-dot swatch-${swatch}${milestone.precision === "tbc" ? " is-tbc" : ""}"></span>
+        <span class="mark-dot importance-${esc(MR.importanceOf(milestone.type))}${milestone.precision === "tbc" ? " is-tbc" : ""}"></span>
         <div>
           <h3>${esc(milestone.label)}${current ? ' <span class="badge">Next</span>' : ""} <span class="badge">${esc(milestone.confidence)}</span></h3>
           <p>${esc(when)}</p>
@@ -403,6 +423,7 @@ const next = data.milestones
       <p>The same dates are also in <a href="${esc(url("calendar.ics"))}">calendar.ics</a>.</p>
       <h2>How a date is labelled</h2>
       <p>Official means the organiser's own page states it. Reported means a published account of that page, kept because the organiser's wording was not captured directly. Expected means it is not published: the file stores null, and the note says why. Nothing here is a guess dressed up as a clock time.</p>
+      <p>On the calendar, each race has one pale colour. The mark gets darker as the date matters more: a ballot is the lightest fill, a result is a dark circle with only a border, an expo is dark, and race day is the darkest. The hex values in <code>milestoneTypes</code> stay the feed's type key.</p>
       <h2>What this is not</h2>
       <p>Not an entry agent, not a charity broker, and not affiliated with Abbott World Marathon Majors, NYRR, the B.A.A., London Marathon Events, or any other organiser. Confirm the live entry page before you pay or book flights.</p>
       <h2>What comes next</h2>
@@ -485,6 +506,20 @@ const next = data.milestones
     } else if (action === "filter") {
       state.filter = target.dataset.filter;
       keepScroll(render);
+    } else if (action === "race-filter") {
+      const id = target.dataset.id;
+      if (id === "all") state.races = [];
+      else if (state.races.includes(id)) state.races = state.races.filter((item) => item !== id);
+      else state.races.push(id);
+      saveView();
+      keepScroll(render);
+    } else if (action === "type-filter") {
+      const type = target.dataset.type;
+      if (type === "all") state.types = [];
+      else if (state.types.includes(type)) state.types = state.types.filter((item) => item !== type);
+      else state.types.push(type);
+      saveView();
+      keepScroll(render);
     } else if (action === "plan-add") {
       togglePlan(target.dataset.id);
       keepScroll(render);
@@ -561,7 +596,7 @@ const next = data.milestones
 
   function tick() {
     state.now = Date.now();
-    const nextKey = MR.boundaryKey(MR.boundaries(state.data.events, state.now)[0]);
+    const nextKey = MR.boundaryKey(MR.boundaries(clockEvents(), state.now)[0]);
     const event = currentEvent();
     const eventKey = event ? MR.boundaryKey(MR.boundaries([event], state.now)[0]) : "";
     if (nextKey !== state.boundaryKey || eventKey !== state.eventKey) {
@@ -598,13 +633,13 @@ const next = data.milestones
   }
 
   function rememberBoundary() {
-    state.boundaryKey = MR.boundaryKey(MR.boundaries(state.data.events, state.now)[0]);
+    state.boundaryKey = MR.boundaryKey(MR.boundaries(clockEvents(), state.now)[0]);
     const event = currentEvent();
     state.eventKey = event ? MR.boundaryKey(MR.boundaries([event], state.now)[0]) : "";
   }
 
-  function upcomingEvents() {
-    return state.data.events.slice().sort((a, b) => {
+  function upcomingEvents(events) {
+    return events.slice().sort((a, b) => {
       const aNext = MR.boundaries([a], state.now)[0];
       const bNext = MR.boundaries([b], state.now)[0];
       if (aNext && bNext) return aNext.t - bNext.t || a.order - b.order;
@@ -696,6 +731,54 @@ const next = data.milestones
 
   function savePlan() {
     localStorage.setItem("marathon-race-plan-v1", JSON.stringify(state.plan));
+  }
+
+  function scopedEvents() {
+    return MR.filterEvents(state.data.events, { ids: state.races, types: state.types });
+  }
+
+  function visibleStages(event) {
+    return MR.stagesOf(event).filter((stage) => {
+      if (!state.types.length) return true;
+      const milestones = stage.milestones && stage.milestones.length ? stage.milestones : [stage.milestone].filter(Boolean);
+      return milestones.some((milestone) => state.types.includes(milestone.type));
+    });
+  }
+
+  function clockEvents() {
+    return document.documentElement.dataset.page === "home" ? scopedEvents() : state.data.events;
+  }
+
+  function loadView() {
+    const saved = loadJson("marathon-race-view-v1", { races: [], dates: "all" });
+    const known = new Set(state.data.events.map((event) => event.id));
+    const knownTypes = new Set(MR.MILESTONE_TYPES);
+    state.races = Array.isArray(saved.races) ? saved.races.filter((id) => known.has(id)) : [];
+    state.types = Array.isArray(saved.types) ? saved.types.filter((id) => knownTypes.has(id)) : [];
+  }
+
+  function saveView() {
+    localStorage.setItem("marathon-race-view-v1", JSON.stringify({ races: state.races, types: state.types }));
+  }
+
+  function raceFilters() {
+    const events = state.data.events.slice().sort((a, b) => a.order - b.order);
+    const buttons = [`<button class="text-button" type="button" data-action="race-filter" data-id="all" aria-pressed="${state.races.length === 0}">All races</button>`]
+      .concat(events.map((event) => `<button class="text-button" type="button" data-action="race-filter" data-id="${esc(event.id)}" aria-pressed="${state.races.includes(event.id)}"><i style="--swatch:${esc(MR.raceColor(event.id))}" aria-hidden="true"></i>${esc(flag(event))} ${esc(event.shortName)} ${esc(String(event.edition))}</button>`))
+      .join("");
+    return `<div class="filter-group"><p class="filter-label" id="race-filter-label">Races</p><div class="filters" role="group" aria-labelledby="race-filter-label">${buttons}</div></div>`;
+  }
+
+  function milestoneFilters() {
+    const buttons = [`<button class="text-button" type="button" data-action="type-filter" data-type="all" aria-pressed="${state.types.length === 0}">All milestones</button>`]
+      .concat(state.data.milestoneTypes.map((type) => `<button class="text-button" type="button" data-action="type-filter" data-type="${esc(type.id)}" aria-pressed="${state.types.includes(type.id)}"><i class="sample importance-${esc(MR.importanceOf(type.id))}" aria-hidden="true"></i>${esc(type.label)}</button>`))
+      .join("");
+    return `<div class="filter-group"><p class="filter-label" id="milestone-filter-label">Milestones</p><div class="filters" role="group" aria-labelledby="milestone-filter-label">${buttons}</div></div>`;
+  }
+
+  function legendItem(importance, label) {
+    const active = !state.types.length || state.types.some((type) => MR.importanceOf(type) === importance);
+    return `<li class="${active ? "" : "is-off"}"><i class="importance-${importance}"></i>${esc(label)}</li>`;
   }
 
   function initToday() {
