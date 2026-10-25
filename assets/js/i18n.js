@@ -512,7 +512,7 @@
   function initialLang() {
     try {
       const saved = globalThis.localStorage && localStorage.getItem("marathon-race-lang");
-      if (saved === "zh-Hant" || saved === "en") return saved;
+      if (saved === "zh-Hant" || saved === "fr" || saved === "en") return saved;
       const list = (globalThis.navigator && (navigator.languages || [navigator.language])) || [];
       if (list.some((item) => /zh-(Hant|TW|HK|MO)/i.test(String(item)))) return "zh-Hant";
     } catch (error) {

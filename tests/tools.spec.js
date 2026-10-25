@@ -92,7 +92,7 @@ test("a language switch keeps the pace the runner just calculated", async ({ pag
   await page.locator('input[name="minutes"]').fill("0");
   await page.locator('input[name="seconds"]').fill("0");
   await page.getByRole("button", { name: "Calculate pace" }).click();
-  await page.locator('[data-action="lang"][data-lang="zh-Hant"]').click();
+  await page.locator(".lang-select").selectOption("zh-Hant");
   await expect(page.locator("h1")).toHaveText("配速計算");
   await expect(page.locator(".tool-result")).toContainText("4:16");
   await expect(page.locator(".tool-result")).toContainText("6:52");
@@ -102,7 +102,7 @@ test("a language switch keeps the pace the runner just calculated", async ({ pag
 test("Traditional Chinese names the tools", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await prepare(page);
-  await page.locator('[data-action="lang"][data-lang="zh-Hant"]').click();
+  await page.locator(".lang-select").selectOption("zh-Hant");
   await page.getByRole("button", { name: "工具" }).click();
   await expect(page.locator("#tool-menu")).toContainText("賽事計劃");
   await expect(page.locator("#tool-menu")).toContainText("配速表");

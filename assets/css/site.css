@@ -164,7 +164,14 @@ button, input, select { font: inherit; color: inherit; }
 .header-row.is-open .menu-icon { background: transparent; }
 .header-row.is-open .menu-icon::before { top: 0; transform: rotate(45deg); }
 .header-row.is-open .menu-icon::after { top: 0; transform: rotate(-45deg); }
-.lang-button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.lang-select {
+  min-height: 36px;
+  padding: 0 10px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+}
 html[lang="zh-Hant"] body,
 html[lang="zh-Hant"] button,
 html[lang="zh-Hant"] input,
