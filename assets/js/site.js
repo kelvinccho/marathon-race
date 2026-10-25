@@ -118,6 +118,7 @@
       event: `${t("Event")} — ${brand}`,
       plan: `${t("Plan your race")} — ${brand}`,
       about: `${t("About")} — ${brand}`,
+      privacy: `${t("Privacy")} — ${brand}`,
       alerts: `${t("Get alerts")} — ${brand}`,
       "race-plan": `${t("Race Plan")} — ${brand}`,
       pace: `${t("Pace calculator")} — ${brand}`,
@@ -133,6 +134,7 @@
       event: renderEvent,
       plan: renderPlan,
       about: renderAbout,
+      privacy: renderPrivacy,
       alerts: renderAlerts,
       "race-plan": renderRacePlan,
       pace: renderPace,
@@ -182,12 +184,29 @@
   function footer() {
     return `<footer class="site-footer"><div class="wrap footer-row">
       <p>${esc(t("Checked"))} ${esc(checkedLabel())}. ${esc(t("Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser."))} ${esc(view().disclaimer)}</p>
-      <nav aria-label="${esc(t("Data"))}">
-        <a href="${esc(url("data/events.json"))}">events.json</a>
-        <a href="${esc(url("data/milestones.json"))}">milestones.json</a>
-        <a href="${esc(url("calendar.ics"))}">calendar.ics</a>
-      </nav>
+      <div class="footer-links">
+        <nav aria-label="${esc(t("Policy"))}">
+          <a href="${esc(url("privacy/"))}">${esc(t("Privacy"))}</a>
+        </nav>
+        <nav aria-label="${esc(t("Data"))}">
+          <a href="${esc(url("data/events.json"))}">events.json</a>
+          <a href="${esc(url("data/milestones.json"))}">milestones.json</a>
+          <a href="${esc(url("calendar.ics"))}">calendar.ics</a>
+        </nav>
+      </div>
     </div></footer>`;
+  }
+
+  function renderPrivacy() {
+    return `<div class="wrap prose">
+      <p class="eyebrow">${esc(t("Privacy"))}</p>
+      <h1>${esc(t("What this site keeps, and what it does not."))}</h1>
+      <p>${esc(t("Marathon Race has no accounts, no analytics, and no advertising. The site does not set cookies."))}</p>
+      <h2>${esc(t("Kept in your browser"))}</h2>
+      <p>${esc(t("Your language, your filters, the races in your plan, and any reminder email you save are kept in this browser's local storage. They are not sent to us or to anyone else. Clear this site's data in your browser to remove them."))}</p>
+      <h2>${esc(t("Other services your browser contacts"))}</h2>
+      <p>${esc(t("The pages load fonts from Google Fonts, so Google receives your IP address and browser details when a page loads. The site is hosted on GitHub Pages, which may keep its own server logs. Neither is under this site's control."))}</p>
+    </div>`;
   }
 
   function renderHome() {

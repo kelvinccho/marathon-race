@@ -703,6 +703,7 @@ input[type="email"] {
 .site-footer { border-top: 1px solid var(--line); padding: 22px 0 36px; color: var(--muted); }
 .footer-row { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
 .site-footer nav { display: flex; flex-wrap: wrap; gap: 12px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 12px 24px; }
 .page-miss { padding: 12vh 0; }
 .loading { padding: 48px 0; }
 .sr {
