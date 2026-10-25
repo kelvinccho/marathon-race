@@ -146,7 +146,7 @@
 
   function header(page) {
     const link = (id, label, path) => `<a href="${esc(url(path))}"${page === id ? ' aria-current="page"' : ""}>${label}</a>`;
-    const langButton = (id, label) => `<button class="text-button lang-button" type="button" data-action="lang" data-lang="${id}" aria-pressed="${state.lang === id}" lang="${id === "zh-Hant" ? "zh-Hant" : "en"}">${label}</button>`;
+    const langOption = (id, label) => `<option value="${id}" lang="${id}"${state.lang === id ? " selected" : ""}>${label}</option>`;
     const menuLabel = t(state.menuOpen ? "Close menu" : "Menu");
     return `<a class="skip" href="#content">${esc(t("Skip to content"))}</a>
       <header class="site-header"><div class="wrap header-row${state.menuOpen ? " is-open" : ""}">
@@ -158,7 +158,7 @@
             ${link("plan", esc(t("Plan your race")), "plan/")}
             ${link("about", esc(t("About")), "about/")}
             ${toolMenu(page)}
-            <div class="lang-switch" role="group" aria-label="${esc(t("Language"))}">${langButton("en", "EN")}${langButton("zh-Hant", "繁體")}</div>
+            <div class="lang-switch"><select class="lang-select" data-action="lang" aria-label="${esc(t("Language"))}">${langOption("en", "en")}${langOption("zh-Hant", "中文")}${langOption("fr", "Français")}</select></div>
           </div>
           <a class="nav-alert" href="${esc(url("alerts/"))}"${page === "alerts" ? ' aria-current="page"' : ""}>${esc(t("Get Alerts"))}</a>
         </nav>
@@ -946,12 +946,6 @@ const next = data.milestones
       keepScroll(render);
       const focusTarget = state.menuOpen ? document.querySelector("#site-menu a") : document.querySelector(".menu-button");
       if (focusTarget) focusTarget.focus();
-    } else if (action === "lang") {
-      state.lang = target.dataset.lang === "zh-Hant" ? "zh-Hant" : "en";
-      state.toolsOpen = false;
-      localStorage.setItem("marathon-race-lang", state.lang);
-      MR.setLocale(langTag());
-      render();
     } else if (action === "plan-add") {
       togglePlan(target.dataset.id);
       keepScroll(render);
@@ -983,6 +977,14 @@ const next = data.milestones
     const target = event.target;
     if (target.dataset.action === "tool-distance" || target.dataset.action === "tool-unit") {
       keepScroll(render);
+    } else if (target.dataset.action === "lang") {
+      state.lang = ["zh-Hant", "fr"].includes(target.value) ? target.value : "en";
+      state.toolsOpen = false;
+      localStorage.setItem("marathon-race-lang", state.lang);
+      MR.setLocale(langTag());
+      render();
+      const select = document.querySelector(".lang-select");
+      if (select) select.focus();
     } else if (target.dataset.action === "plan-toggle") {
       if (target.checked && !state.plan.ids.includes(target.dataset.id)) state.plan.ids.push(target.dataset.id);
       if (!target.checked) state.plan.ids = state.plan.ids.filter((id) => id !== target.dataset.id);

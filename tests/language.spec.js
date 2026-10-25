@@ -21,7 +21,7 @@ async function prepare(page, path = "/") {
 }
 
 async function chooseTraditional(page) {
-  await page.locator('[data-action="lang"][data-lang="zh-Hant"]').click();
+  await page.locator(".lang-select").selectOption("zh-Hant");
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
 }
 
@@ -40,7 +40,8 @@ test("English is the default and event names stay in English", async ({ page }) 
   const rowBox = await row.boundingBox();
   const timeBox = await row.locator("time").boundingBox();
   expect(timeBox.x).toBeGreaterThan(rowBox.x + 10);
-  await expect(page.locator('[data-action="lang"][data-lang="en"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".lang-select")).toHaveValue("en");
+  await expect(page.locator(".lang-select option")).toHaveText(["en", "中文", "Français"]);
 });
 
 test("Traditional Chinese translates the page and leaves event names alone", async ({ page }) => {
@@ -101,7 +102,7 @@ test("the language choice survives navigation and can switch back", async ({ pag
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-Hant");
   await expect(page.locator("h1")).toContainText("一份你可以留著的行事曆");
-  await page.locator('[data-action="lang"][data-lang="en"]').click();
+  await page.locator(".lang-select").selectOption("en");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(page.locator("h1")).toHaveText("A calendar you can keep, and a feed other apps can read.");
   expect(await page.evaluate(() => localStorage.getItem("marathon-race-lang"))).toBe("en");
@@ -127,7 +128,7 @@ test("filters apply to the calendar and the list in both languages", async ({ pa
   await expect(page.locator(".bar-label")).toHaveCount(0);
   await expect(page.locator(".race-list em")).toContainText("比賽週末");
 
-  await page.locator('[data-action="lang"][data-lang="en"]').click();
+  await page.locator(".lang-select").selectOption("en");
   await expect(page.locator(".race-list .race-row")).toHaveCount(1);
   await expect(page.locator(".race-list")).toContainText("TCS London Marathon");
   await expect(page.locator(".race-list em")).toContainText("Race weekend");

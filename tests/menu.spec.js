@@ -28,12 +28,12 @@ async function openMenu(page) {
 test("a wide screen keeps every header control in one row", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await prepare(page);
-  await page.locator('[data-action="lang"][data-lang="zh-Hant"]').click();
+  await page.locator(".lang-select").selectOption("zh-Hant");
   await expect(page.locator(".menu-button")).toBeHidden();
   const brand = await page.locator(".brand").boundingBox();
   const home = await page.getByRole("link", { name: "首頁", exact: true }).boundingBox();
   const alerts = await page.getByRole("link", { name: "接收提醒", exact: true }).boundingBox();
-  const traditional = await page.getByRole("button", { name: "繁體", exact: true }).boundingBox();
+  const traditional = await page.locator(".lang-select").boundingBox();
   expect(Math.abs(home.y - brand.y)).toBeLessThan(24);
   expect(Math.abs(alerts.y - brand.y)).toBeLessThan(24);
   expect(Math.abs(traditional.y - brand.y)).toBeLessThan(24);
@@ -65,8 +65,8 @@ test("a phone hides the links and language switch in a menu", async ({ page }) =
   await expect(menuLink(page, "Events")).toBeHidden();
   await expect(menuLink(page, "Plan your race")).toBeHidden();
   await expect(menuLink(page, "About")).toBeHidden();
-  await expect(page.locator("#site-menu .lang-button")).toHaveCount(2);
-  await expect(page.locator("#site-menu .lang-button").first()).toBeHidden();
+  await expect(page.locator("#site-menu .lang-select option")).toHaveCount(3);
+  await expect(page.locator("#site-menu .lang-select")).toBeHidden();
   await expect(page.locator("a.nav-alert")).toBeVisible();
   await expect(page.locator("a.nav-alert")).toHaveText("Get Alerts");
   await expect(page.locator(".menu-button")).toBeVisible();
@@ -82,13 +82,13 @@ test("a phone hides the links and language switch in a menu", async ({ page }) =
   await expect(menuLink(page, "Events")).toBeVisible();
   await expect(menuLink(page, "Plan your race")).toBeVisible();
   await expect(menuLink(page, "About")).toBeVisible();
-  await expect(page.locator("#site-menu .lang-button")).toHaveText(["EN", "繁體"]);
+  await expect(page.locator("#site-menu .lang-select option")).toHaveText(["en", "中文", "Français"]);
   const home = await menuLink(page, "Home").boundingBox();
   const alertsOpen = await page.locator("a.nav-alert").boundingBox();
   expect(home.y).toBeGreaterThan(alertsOpen.y + alertsOpen.height - 8);
   expect(Math.abs(alertsOpen.y - brand.y)).toBeLessThan(20);
 
-  await page.locator('[data-action="lang"][data-lang="zh-Hant"]').click();
+  await page.locator(".lang-select").selectOption("zh-Hant");
   await expect(page.locator(".menu-button")).toHaveAttribute("aria-expanded", "true");
   for (const name of ["首頁", "賽事", "規劃賽事", "關於"]) {
     await expect(menuLink(page, name)).toBeVisible();
