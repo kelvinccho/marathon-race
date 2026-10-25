@@ -23,6 +23,7 @@ const pages = [
   { path: "events/index.html", depth: 1, page: "events", title: "Events — Marathon Race", description: "Every World Marathon Major on one list, with the dates that get you to the start line." },
   { path: "plan/index.html", depth: 1, page: "plan", title: "Plan your race — Marathon Race", description: "Pick the majors you are chasing and see every remaining deadline, plus the Monday a 16-week block starts." },
   { path: "about/index.html", depth: 1, page: "about", title: "About — Marathon Race", description: "An independent majors calendar, published as JSON so you can use the dates in your own app." },
+  { path: "privacy/index.html", depth: 1, page: "privacy", title: "Privacy — Marathon Race", description: "What Marathon Race keeps in your browser, and which other services your browser contacts." },
   { path: "alerts/index.html", depth: 1, page: "alerts", title: "Get alerts — Marathon Race", description: "Subscribe to the calendar, or read the JSON feed from your own app." },
   { path: "tools/race-plan/index.html", depth: 2, page: "race-plan", title: "Race Plan — Marathon Race", description: "PaceBest plans a marathon you can follow on the day: pace, heart rate, and gel reminders." },
   { path: "tools/pace/index.html", depth: 2, page: "pace", title: "Pace calculator — Marathon Race", description: "Turn a finish time into pace per kilometre and per mile, or the other way around." },

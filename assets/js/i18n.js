@@ -245,6 +245,14 @@
     "A planning tool, not medical or coaching advice.": "這是規劃工具，不是醫療或訓練建議。",
     "Unit": "單位",
     "bpm": "次／分鐘",
+    "Privacy": "隱私",
+    "Policy": "政策",
+    "What this site keeps, and what it does not.": "這個網站保存什麼，不保存什麼。",
+    "Marathon Race has no accounts, no analytics, and no advertising. The site does not set cookies.": "Marathon Race 沒有帳號、沒有分析工具，也沒有廣告。本網站不會設定 cookie。",
+    "Kept in your browser": "保存在你的瀏覽器",
+    "Your language, your filters, the races in your plan, and any reminder email you save are kept in this browser's local storage. They are not sent to us or to anyone else. Clear this site's data in your browser to remove them.": "你的語言、篩選條件、計劃中的賽事，以及你儲存的提醒電郵，都存在這個瀏覽器的本機儲存空間，不會送給我們或任何其他人。要移除它們，請在瀏覽器清除這個網站的資料。",
+    "Other services your browser contacts": "你的瀏覽器會連到的其他服務",
+    "The pages load fonts from Google Fonts, so Google receives your IP address and browser details when a page loads. The site is hosted on GitHub Pages, which may keep its own server logs. Neither is under this site's control.": "頁面會從 Google Fonts 載入字體，所以頁面載入時 Google 會收到你的 IP 位址和瀏覽器資訊。本網站放在 GitHub Pages，GitHub 可能有自己的伺服器紀錄。這兩者都不在本網站的控制之下。",
   };
 
   const PLACES = {
