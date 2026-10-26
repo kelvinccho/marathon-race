@@ -140,7 +140,7 @@
       "pace-chart": renderPaceChart,
       gel: renderGel,
     }[page] || renderHome;
-    document.getElementById("app").innerHTML = `${header(page)}<main id="content" class="page">${body()}</main>${footer()}`;
+    document.getElementById("app").innerHTML = `${header(page)}<main id="content" class="page">${body()}</main>${footer(page)}`;
     paintClock();
   }
 
@@ -179,14 +179,26 @@
     </div>`;
   }
 
-  function footer() {
+  function footer(page) {
+    const link = (id, label, path) => `<a href="${esc(url(path))}"${page === id ? ' aria-current="page"' : ""}>${esc(t(label))}</a>`;
+    const tools = TOOLS.map(([id, label, path]) => link(id, label, path)).join("");
     return `<footer class="site-footer"><div class="wrap footer-row">
-      <p>${esc(t("Checked"))} ${esc(checkedLabel())}. ${esc(t("Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser."))} ${esc(view().disclaimer)}</p>
-      <nav aria-label="${esc(t("Data"))}">
-        <a href="${esc(url("data/events.json"))}">events.json</a>
-        <a href="${esc(url("data/milestones.json"))}">milestones.json</a>
-        <a href="${esc(url("calendar.ics"))}">calendar.ics</a>
-      </nav>
+      <p class="footer-copy">${esc(t("Checked"))} ${esc(checkedLabel())}. ${esc(t("Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser."))} ${esc(view().disclaimer)}</p>
+      <div class="footer-nav-groups">
+        <nav aria-label="${esc(t("Footer navigation"))}">
+          ${link("home", "Home", "")}
+          ${link("events", "Events", "events/")}
+          ${link("plan", "Plan your race", "plan/")}
+          ${link("about", "About", "about/")}
+          ${link("alerts", "Get Alerts", "alerts/")}
+        </nav>
+        <nav aria-label="${esc(t("Tool"))}">${tools}</nav>
+        <nav aria-label="${esc(t("Data"))}">
+          <a href="${esc(url("data/events.json"))}">events.json</a>
+          <a href="${esc(url("data/milestones.json"))}">milestones.json</a>
+          <a href="${esc(url("calendar.ics"))}">calendar.ics</a>
+        </nav>
+      </div>
     </div></footer>`;
   }
 

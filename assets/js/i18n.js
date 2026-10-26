@@ -16,6 +16,7 @@
     "Menu": "選單",
     "Close menu": "關閉選單",
     "Primary": "主要",
+    "Footer navigation": "頁尾導覽",
     "Checked": "查核日期",
     "Independent calendar. Not affiliated with Abbott World Marathon Majors or any race organiser.": "獨立行事曆。與 Abbott World Marathon Majors 或任何賽事主辦單位無關。",
     "Data": "資料",
